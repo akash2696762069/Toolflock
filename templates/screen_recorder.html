@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Screen Recorder - Toolflock</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="/static/styles.css" />
+    <style>
+        :root {
+            --bg: #0a0a0f;
+            --card: #12121a;
+            --text: #ffffff;
+            --muted: #94959f;
+            --accent: #7a5cff;
+            --neon: #00ffcc;
+            --error: #ff4757;
+            --success: #00c851;
+        }
+        
+        body.light-theme {
+            --bg: #f8f9fa;
+            --card: #ffffff;
+            --text: #1a1a2e;
+            --muted: #6c757d;
+            --accent: #6c5ce7;
+            --neon: #00b894;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Footer styles as backup in case main CSS fails to load */
+        .modern-footer {
+            background: linear-gradient(135deg, rgba(10, 14, 32, 0.95), rgba(5, 8, 22, 0.98));
+            border-top: 1px solid rgba(255,255,255,0.08);
+            margin-top: 60px;
+            padding: 48px 0 24px;
+            backdrop-filter: blur(20px);
+        }
+        
+        .footer-content {
+            max-width: 1040px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 48px;
+            margin-bottom: 32px;
+        }
+        
+        .footer-brand h3 {
+            margin: 0 0 16px 0;
+            font-size: 28px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent), var(--neon));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .footer-brand p {
+            margin: 0;
+            color: var(--muted);
+            line-height: 1.6;
+            font-size: 16px;
+        }
+        
+        .footer-links {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 32px;
+        }
+        
+        .footer-column h4 {
+            margin: 0 0 16px 0;
+            color: var(--text);
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        .footer-column a {
+            display: block;
+            color: var(--muted);
+            text-decoration: none;
+            margin-bottom: 8px;
+            transition: color 0.3s ease;
+            font-size: 14px;
+        }
+        
+        .footer-column a:hover {
+            color: var(--accent);
+        }
+        
+        .footer-bottom {
+            border-top: 1px solid rgba(255,255,255,0.06);
+            padding-top: 24px;
+            text-align: center;
+        }
+        
+        .footer-tagline {
+            font-size: 16px;
+            font-weight: 600;
+            background: linear-gradient(135deg, var(--accent), var(--neon));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        @media (max-width: 768px) {
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 32px;
+            }
+            
+            .footer-links {
+                grid-template-columns: 1fr;
+                gap: 24px;
+            }
+        }
+        
+        .navbar {
+            background: var(--card);
+            border-bottom: 1px solid rgba(122, 92, 255, 0.1);
+            padding: 16px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .brand {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text);
+            text-decoration: none;
+        }
+        
+        .byline { font-size: 12px; color: var(--muted); margin-left: 8px; }
+        
+        .nav-links {
+            display: flex;
+            gap: 24px;
+            align-items: center;
+        }
+        
+        .nav-links a {
+            color: var(--text);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover { color: var(--accent); }
+        
+        .theme-toggle {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: var(--text);
+        }
+        
+        .profile-menu { position: relative; }
+        
+        .profile-btn {
+            background: linear-gradient(135deg, var(--accent), var(--neon));
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        
+        .profile-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            margin-top: 8px;
+            background: var(--card);
+            border: 1px solid rgba(122, 92, 255, 0.2);
+            border-radius: 8px;
+            padding: 8px;
+            min-width: 150px;
+            display: none;
+        }
+        
+        .profile-dropdown a {
+            display: block;
+            padding: 8px 12px;
+            color: var(--text);
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background 0.3s;
+        }
+        
+        .profile-dropdown a:hover { background: rgba(122, 92, 255, 0.1); }
+        
+        .get-started-btn {
+            background: linear-gradient(135deg, var(--accent), var(--neon));
+            color: white;
+            padding: 10px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: transform 0.3s;
+        }
+        
+        .get-started-btn:hover { transform: translateY(-2px); }
+        
+        .recorder-container {
+            flex: 1;
+            max-width: 1200px;
+            width: 100%;
+            margin: 60px auto;
+            padding: 0 20px;
+        }
+        
+        .tool-header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+        
+        .tool-header h1 {
+            font-size: 48px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent), var(--neon));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 16px;
+        }
+        
+        .tool-header p { color: var(--muted); font-size: 18px; }
+        
+        .recorder-card {
+            background: var(--card);
+            border: 1px solid rgba(122, 92, 255, 0.1);
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .controls-section {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 32px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .control-btn {
+            background: linear-gradient(135deg, var(--accent), var(--neon));
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 140px;
+            justify-content: center;
+        }
+        
+        .control-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(122, 92, 255, 0.3);
+        }
+        
+        .control-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .control-btn.stop {
+            background: linear-gradient(135deg, var(--error), #ff6b7a);
+        }
+        
+        .control-btn.download {
+            background: linear-gradient(135deg, var(--success), #00e676);
+            text-decoration: none;
+        }
+        
+        .preview-section {
+            position: relative;
+            background: #000;
+            border-radius: 16px;
+            overflow: hidden;
+            aspect-ratio: 16/9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .preview-video {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+        
+        .preview-placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+            color: var(--muted);
+        }
+        
+        .preview-placeholder i {
+            font-size: 64px;
+            color: var(--accent);
+        }
+        
+        .preview-placeholder h3 {
+            font-size: 24px;
+            font-weight: 600;
+        }
+        
+        .preview-placeholder p {
+            font-size: 16px;
+            text-align: center;
+            max-width: 400px;
+        }
+        
+        .recording-status {
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            background: rgba(255, 71, 87, 0.9);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            display: none;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .recording-status.active {
+            display: flex;
+        }
+        
+        .recording-dot {
+            width: 8px;
+            height: 8px;
+            background: white;
+            border-radius: 50%;
+            animation: pulse 1s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+        
+        .permissions-notice {
+            background: rgba(255, 187, 51, 0.1);
+            border: 1px solid rgba(255, 187, 51, 0.3);
+            color: #ffbb33;
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .permissions-notice i {
+            font-size: 24px;
+        }
+        
+        @media (max-width: 768px) {
+            .tool-header h1 { font-size: 32px; }
+            .recorder-card { padding: 24px; }
+            .controls-section { flex-direction: column; align-items: center; }
+            .control-btn { width: 100%; max-width: 300px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div>
+            <a href="/" class="brand">Toolflock</a><span class="byline">by Erekan</span>
+        </div>
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/all-tools">All Tools</a>
+            <button class="theme-toggle" id="themeToggle" title="Toggle theme">🌙</button>
+            {% if current_user.is_authenticated %}
+                <div class="profile-menu">
+                    <button class="profile-btn" id="profileBtn">
+                        <i class='bx bx-user'></i>
+                        {{ current_user.username }}
+                    </button>
+                    <div class="profile-dropdown" id="profileDropdown">
+                        <a href="/profile">Profile</a>
+                        <a href="/signout">Sign Out</a>
+                    </div>
+                </div>
+            {% else %}
+                <a href="/signin" class="get-started-btn">Get Started</a>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div class="recorder-container">
+        <div class="tool-header">
+            <h1>Screen Recorder</h1>
+            <p>Record your screen and microphone with high quality</p>
+        </div>
+        
+        <div class="recorder-card">
+            <div class="permissions-notice">
+                <i class='bx bx-info-circle'></i>
+                <div>
+                    <strong>Permissions Required:</strong> This tool needs access to your screen and microphone to function properly.
+                </div>
+            </div>
+            
+            <div class="controls-section">
+                <button class="control-btn" id="startBtn">
+                    <i class='bx bx-play-circle'></i>
+                    Start Recording
+                </button>
+                <button class="control-btn stop" id="stopBtn" disabled>
+                    <i class='bx bx-stop-circle'></i>
+                    Stop Recording
+                </button>
+                <a class="control-btn download" id="downloadBtn" download="screen-recording.webm" style="display: none;">
+                    <i class='bx bx-download'></i>
+                    Download Video
+                </a>
+            </div>
+            
+            <div class="preview-section">
+                <div class="recording-status" id="recordingStatus">
+                    <div class="recording-dot"></div>
+                    REC
+                </div>
+                
+                <video class="preview-video" id="previewVideo" autoplay playsinline muted style="display: none;"></video>
+                
+                <div class="preview-placeholder" id="previewPlaceholder">
+                    <i class='bx bx-video'></i>
+                    <h3>Ready to Record</h3>
+                    <p>Click "Start Recording" to begin capturing your screen. You'll be able to select which screen or application to record.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="/static/profile-drawer.js"></script>
+    <script>
+        // Theme toggle
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        
+        const savedTheme = localStorage.getItem('toolflock-theme') || 'dark';
+        if (savedTheme === 'light') {
+            body.classList.add('light-theme');
+            themeToggle.textContent = '☀️';
+        }
+        
+        if (themeToggle) {
+            themeToggle.addEventListener('click', () => {
+                body.classList.toggle('light-theme');
+                const isLight = body.classList.contains('light-theme');
+                themeToggle.textContent = isLight ? '☀️' : '🌙';
+                localStorage.setItem('toolflock-theme', isLight ? 'light' : 'dark');
+            });
+        }
+        
+        // Profile dropdown
+        const profileBtn = document.getElementById('profileBtn');
+        const profileDropdown = document.getElementById('profileDropdown');
+        
+        if (profileBtn && profileDropdown) {
+            profileBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                profileDropdown.style.display = profileDropdown.style.display === 'block' ? 'none' : 'block';
+            });
+            
+            document.addEventListener('click', () => {
+                profileDropdown.style.display = 'none';
+            });
+        }
+        
+        // Screen recorder functionality
+        const startBtn = document.getElementById('startBtn');
+        const stopBtn = document.getElementById('stopBtn');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const previewVideo = document.getElementById('previewVideo');
+        const previewPlaceholder = document.getElementById('previewPlaceholder');
+        const recordingStatus = document.getElementById('recordingStatus');
+        
+        let mediaRecorder;
+        let recordedChunks = [];
+        
+        function showError(message) {
+            alert(`Error: ${message}`);
+        }
+        
+        function updateUI(state) {
+            switch (state) {
+                case 'ready':
+                    startBtn.disabled = false;
+                    stopBtn.disabled = true;
+                    downloadBtn.style.display = 'none';
+                    recordingStatus.classList.remove('active');
+                    previewVideo.style.display = 'none';
+                    previewPlaceholder.style.display = 'flex';
+                    startBtn.innerHTML = '<i class="bx bx-play-circle"></i> Start Recording';
+                    break;
+                    
+                case 'recording':
+                    startBtn.disabled = true;
+                    stopBtn.disabled = false;
+                    downloadBtn.style.display = 'none';
+                    recordingStatus.classList.add('active');
+                    previewVideo.style.display = 'block';
+                    previewPlaceholder.style.display = 'none';
+                    break;
+                    
+                case 'stopped':
+                    startBtn.disabled = false;
+                    stopBtn.disabled = true;
+                    downloadBtn.style.display = 'flex';
+                    recordingStatus.classList.remove('active');
+                    break;
+            }
+        }
+        
+        startBtn.addEventListener('click', async () => {
+            try {
+                startBtn.innerHTML = '<i class="bx bx-loader-alt bx-spin"></i> Starting...';
+                startBtn.disabled = true;
+                
+                // Get screen capture
+                const displayStream = await navigator.mediaDevices.getDisplayMedia({
+                    video: { mediaSource: 'screen' },
+                    audio: true
+                });
+                
+                // Try to get microphone audio
+                let micStream = null;
+                try {
+                    micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                } catch (micError) {
+                    console.warn('Microphone access denied:', micError);
+                }
+                
+                // Combine streams
+                const tracks = [...displayStream.getTracks()];
+                if (micStream) {
+                    tracks.push(...micStream.getTracks());
+                }
+                
+                const combinedStream = new MediaStream(tracks);
+                previewVideo.srcObject = combinedStream;
+                
+                // Setup MediaRecorder
+                recordedChunks = [];
+                mediaRecorder = new MediaRecorder(combinedStream, {
+                    mimeType: 'video/webm;codecs=vp9'
+                });
+                
+                mediaRecorder.ondataavailable = (event) => {
+                    if (event.data.size > 0) {
+                        recordedChunks.push(event.data);
+                    }
+                };
+                
+                mediaRecorder.onstop = () => {
+                    const blob = new Blob(recordedChunks, { type: 'video/webm' });
+                    const url = URL.createObjectURL(blob);
+                    downloadBtn.href = url;
+                    updateUI('stopped');
+                };
+                
+                // Handle stream end (user stops sharing)
+                displayStream.getVideoTracks()[0].addEventListener('ended', () => {
+                    if (mediaRecorder && mediaRecorder.state === 'recording') {
+                        mediaRecorder.stop();
+                    }
+                    combinedStream.getTracks().forEach(track => track.stop());
+                });
+                
+                mediaRecorder.start();
+                updateUI('recording');
+                
+            } catch (error) {
+                console.error('Error starting recording:', error);
+                showError('Failed to start recording. Please ensure you grant the necessary permissions.');
+                updateUI('ready');
+            }
+        });
+        
+        stopBtn.addEventListener('click', () => {
+            if (mediaRecorder && mediaRecorder.state === 'recording') {
+                mediaRecorder.stop();
+            }
+            
+            // Stop all tracks
+            if (previewVideo.srcObject) {
+                previewVideo.srcObject.getTracks().forEach(track => track.stop());
+                previewVideo.srcObject = null;
+            }
+        });
+        
+        // Initialize UI
+        updateUI('ready');
+    </script>
+    
+    <!-- Footer -->
+    <footer class="modern-footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <h3>Toolflock</h3>
+                <p>Empowering creativity with premium digital tools. Built with passion for developers, designers, and creators worldwide.</p>
+            </div>
+            <div class="footer-links">
+                <div class="footer-column">
+                    <h4>Tools</h4>
+                    <a href="/pdf">PDF Tools</a>
+                    <a href="/file-converter">File Converter</a>
+                    <a href="/shortener">URL Shortener</a>
+                    <a href="/qr">QR Generator</a>
+                </div>
+                <div class="footer-column">
+                    <h4>Company</h4>
+                    <a href="/about">About Us</a>
+                    <a href="/contact">Contact</a>
+                    <a href="/privacy">Privacy Policy</a>
+                    <a href="/terms">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2025 Toolflock by Erekan. Crafted with ❤️ for the global community.</p>
+            <div class="footer-tagline">
+                <span>✨ Where Innovation Meets Utility ✨</span>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

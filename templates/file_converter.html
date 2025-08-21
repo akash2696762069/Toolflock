@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Converter - Toolflock</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/styles.css">
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <style>
+        .tool-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .tool-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .tool-header h1 {
+            margin: 8px 0;
+            font-size: 36px;
+            background: linear-gradient(90deg, var(--accent), var(--neon), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            background-size: 200% 100%;
+            animation: shine 6s linear infinite;
+        }
+        .converter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(480px, 1fr));
+            gap: 32px;
+            margin-bottom: 60px;
+        }
+        
+        .converter-card {
+            background: var(--card);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 20px;
+            padding: 32px;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        
+        .converter-card::before {
+            content: "";
+            position: absolute;
+            inset: -1px;
+            border-radius: 20px;
+            padding: 1px;
+            background: linear-gradient(135deg, rgba(122,92,255,.3), rgba(76,209,255,.2), rgba(122,92,255,.3));
+            -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+            -webkit-mask-composite: xor;
+            mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+            mask-composite: exclude;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        
+        .converter-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+        }
+        
+        .converter-card:hover::before {
+            opacity: 1;
+        }
+        
+        .converter-title {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        
+        .converter-title i {
+            width: 56px;
+            height: 56px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, rgba(122,92,255,0.2), rgba(76,209,255,0.15));
+            border: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            color: var(--accent);
+            transition: all 0.3s ease;
+        }
+        
+        .converter-card:hover .converter-title i {
+            background: linear-gradient(135deg, rgba(122,92,255,0.3), rgba(76,209,255,0.25));
+            transform: scale(1.1);
+        }
+        
+        .converter-title span {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text);
+            letter-spacing: 0.3px;
+        }
+        
+        .file-upload-area {
+            border: 2px dashed rgba(122,92,255,0.3);
+            border-radius: 16px;
+            padding: 32px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: rgba(122,92,255,0.02);
+            position: relative;
+            margin-bottom: 20px;
+        }
+        
+        .file-upload-area:hover {
+            border-color: rgba(122,92,255,0.5);
+            background: rgba(122,92,255,0.05);
+            transform: translateY(-2px);
+        }
+        
+        .file-upload-area.active {
+            border-color: var(--accent);
+            background: rgba(122,92,255,0.1);
+            transform: scale(1.02);
+        }
+        
+        .file-upload-area input[type="file"] {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+        
+        .upload-icon {
+            font-size: 32px;
+            color: var(--accent);
+            margin-bottom: 12px;
+            display: block;
+        }
+        
+        .upload-text {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+        
+        .upload-hint {
+            font-size: 14px;
+            color: var(--muted);
+        }
+        
+        .file-info {
+            display: none;
+            align-items: center;
+            gap: 12px;
+            padding: 16px;
+            background: rgba(76,209,255,0.1);
+            border: 1px solid rgba(76,209,255,0.2);
+            border-radius: 12px;
+            margin-bottom: 20px;
+            color: var(--neon);
+        }
+        
+        .file-info.active {
+            display: flex;
+        }
+        
+        .input-group {
+            margin-bottom: 24px;
+        }
+        
+        .input-group label {
+            display: block;
+            font-weight: 600;
+            color: var(--muted);
+            margin-bottom: 8px;
+            font-size: 15px;
+        }
+        
+        .input-group select {
+            width: 100%;
+            height: 48px;
+            padding: 0 16px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.14);
+            background: rgba(5,8,22,0.4);
+            color: var(--text);
+            outline: none;
+            transition: all 0.3s ease;
+            font-size: 15px;
+        }
+        
+        .input-group select:focus {
+            border-color: rgba(124,100,255,.7);
+            box-shadow: 0 0 0 4px rgba(124,100,255,.12), 0 0 0 1px rgba(124,100,255,.3) inset;
+        }
+        
+        .convert-btn {
+            width: 100%;
+            height: 52px;
+            border: none;
+            border-radius: 14px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-2));
+            color: white;
+            font-weight: 700;
+            font-size: 16px;
+            letter-spacing: 0.3px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            box-shadow: 0 8px 24px rgba(122,92,255,.28);
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+        
+        .convert-btn:hover {
+            filter: brightness(1.06);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(122,92,255,.34);
+        }
+        
+        .convert-btn:active {
+            transform: translateY(0);
+        }
+        
+        .convert-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .progress-bar {
+            display: none;
+            width: 100%;
+            height: 8px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .progress-bar.active {
+            display: block;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), var(--neon));
+            border-radius: 4px;
+            width: 0%;
+            transition: width 0.3s ease;
+            position: relative;
+        }
+        
+        .progress-fill::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: shimmer 1.5s infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        @media (max-width: 768px) {
+            .converter-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .converter-card {
+                padding: 24px;
+            }
+            
+            .file-upload-area {
+                padding: 24px 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    {% include 'header.html' %}
+    <div class="tool-container">
+      <div class="tool-header">
+        <h1>File Converter</h1>
+        <p>Convert images and videos to different formats with high quality output</p>
+      </div>
+      
+      <div class="converter-grid">
+        <div class="converter-card">
+          <div class="converter-title">
+            <i class='bx bx-image'></i>
+            <span>Image Converter</span>
+          </div>
+          
+          <form id="img-convert">
+            <div class="file-upload-area" id="imageUploadArea">
+              <input type="file" name="file" accept="image/*" required id="imageFile" />
+              <i class='bx bx-cloud-upload upload-icon'></i>
+              <div class="upload-text">Drop image here or click to browse</div>
+              <div class="upload-hint">Supports: JPG, PNG, GIF, BMP, WEBP</div>
+            </div>
+            
+            <div class="file-info" id="imageFileInfo">
+              <i class='bx bx-file'></i>
+              <span id="imageFileName">No file selected</span>
+            </div>
+            
+            <div class="input-group">
+              <label>Convert to</label>
+              <select name="target">
+                <option value="png">PNG - Lossless compression</option>
+                <option value="jpeg">JPEG - Smaller file size</option>
+                <option value="webp">WEBP - Modern format</option>
+                <option value="bmp">BMP - Uncompressed</option>
+                <option value="gif">GIF - Animated support</option>
+              </select>
+            </div>
+            
+            <button class="convert-btn" type="submit">
+              <i class='bx bx-transfer-alt'></i>
+              Convert Image
+            </button>
+            
+            <div class="progress-bar" id="imageProgress">
+              <div class="progress-fill"></div>
+            </div>
+          </form>
+        </div>
+        
+        <div class="converter-card">
+          <div class="converter-title">
+            <i class='bx bx-video'></i>
+            <span>Video Converter</span>
+          </div>
+          
+          <form id="video-convert">
+            <div class="file-upload-area" id="videoUploadArea">
+              <input type="file" name="file" accept="video/*" required id="videoFile" />
+              <i class='bx bx-cloud-upload upload-icon'></i>
+              <div class="upload-text">Drop video here or click to browse</div>
+              <div class="upload-hint">Supports: MP4, WEBM, AVI, MOV, MKV</div>
+            </div>
+            
+            <div class="file-info" id="videoFileInfo">
+              <i class='bx bx-file'></i>
+              <span id="videoFileName">No file selected</span>
+            </div>
+            
+            <div class="input-group">
+              <label>Convert to</label>
+              <select name="target">
+                <option value="mp4">MP4 - Universal compatibility</option>
+                <option value="webm">WEBM - Web optimized</option>
+                <option value="avi">AVI - Windows format</option>
+                <option value="mov">MOV - Apple format</option>
+                <option value="mkv">MKV - Open standard</option>
+              </select>
+            </div>
+            
+            <button class="convert-btn" type="submit">
+              <i class='bx bx-transfer-alt'></i>
+              Convert Video
+            </button>
+            
+            <div class="progress-bar" id="videoProgress">
+              <div class="progress-fill"></div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    
+    <script src="/static/profile-drawer.js"></script>
+    <script>
+      // Theme toggle
+      const themeToggle = document.getElementById('themeToggle');
+      const body = document.body;
+      
+      const savedTheme = localStorage.getItem('toolflock-theme') || 'dark';
+      if (savedTheme === 'light') {
+        body.classList.add('light-theme');
+        themeToggle.textContent = '☀️';
+      }
+      
+      if (themeToggle) {
+        themeToggle.addEventListener('click', () => {
+          body.classList.toggle('light-theme');
+          const isLight = body.classList.contains('light-theme');
+          themeToggle.textContent = isLight ? '☀️' : '🌙';
+          localStorage.setItem('toolflock-theme', isLight ? 'light' : 'dark');
+        });
+      }
+      
+      // Profile dropdown
+      const profileBtn = document.getElementById('profileBtn');
+      const profileDropdown = document.getElementById('profileDropdown');
+      
+      if (profileBtn && profileDropdown) {
+        profileBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          profileDropdown.style.display = profileDropdown.style.display === 'block' ? 'none' : 'block';
+        });
+        
+        document.addEventListener('click', () => {
+          profileDropdown.style.display = 'none';
+        });
+      }
+      
+      // File upload handling
+      const imageFile = document.getElementById('imageFile');
+      const imageUploadArea = document.getElementById('imageUploadArea');
+      const imageFileInfo = document.getElementById('imageFileInfo');
+      const imageFileName = document.getElementById('imageFileName');
+      
+      const videoFile = document.getElementById('videoFile');
+      const videoUploadArea = document.getElementById('videoUploadArea');
+      const videoFileInfo = document.getElementById('videoFileInfo');
+      const videoFileName = document.getElementById('videoFileName');
+      
+      imageFile.addEventListener('change', (e) => {
+        if (e.target.files && e.target.files[0]) {
+          const file = e.target.files[0];
+          imageFileName.textContent = file.name;
+          imageFileInfo.classList.add('active');
+          imageUploadArea.classList.add('active');
+        }
+      });
+      
+      videoFile.addEventListener('change', (e) => {
+        if (e.target.files && e.target.files[0]) {
+          const file = e.target.files[0];
+          videoFileName.textContent = file.name;
+          videoFileInfo.classList.add('active');
+          videoUploadArea.classList.add('active');
+        }
+      });
+      
+      // Drag and drop
+      [imageUploadArea, videoUploadArea].forEach(area => {
+        area.addEventListener('dragover', (e) => {
+          e.preventDefault();
+          area.classList.add('active');
+        });
+        
+        area.addEventListener('dragleave', () => {
+          area.classList.remove('active');
+        });
+        
+        area.addEventListener('drop', (e) => {
+          e.preventDefault();
+          const input = area.querySelector('input[type="file"]');
+          if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+            input.files = e.dataTransfer.files;
+            input.dispatchEvent(new Event('change'));
+          }
+        });
+      });
+      
+      // Image conversion
+      document.getElementById('img-convert').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const submitBtn = e.target.querySelector('button[type="submit"]');
+        const progressBar = document.getElementById('imageProgress');
+        const progressFill = progressBar.querySelector('.progress-fill');
+        
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="bx bx-loader-alt bx-spin"></i> Converting...';
+        progressBar.classList.add('active');
+        progressFill.style.width = '50%';
+        
+        try {
+          const fd = new FormData(e.target);
+          const res = await fetch('/api/convert/image', { method: 'POST', body: fd });
+          
+          progressFill.style.width = '100%';
+          
+          if (!res.ok) {
+            const error = await res.json();
+            throw new Error(error.error || 'Conversion failed');
+          }
+          
+          const blob = await res.blob();
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'converted.' + (fd.get('target') || 'png');
+          a.click();
+          URL.revokeObjectURL(url);
+          
+          // Reset form
+          setTimeout(() => {
+            e.target.reset();
+            imageFileInfo.classList.remove('active');
+            imageUploadArea.classList.remove('active');
+            imageFileName.textContent = 'No file selected';
+            progressBar.classList.remove('active');
+            progressFill.style.width = '0%';
+          }, 1000);
+        } catch (error) {
+          alert(error.message);
+          progressBar.classList.remove('active');
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = '<i class="bx bx-transfer-alt"></i> Convert Image';
+        }
+      });
+      
+      // Video conversion
+      document.getElementById('video-convert').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const submitBtn = e.target.querySelector('button[type="submit"]');
+        const progressBar = document.getElementById('videoProgress');
+        const progressFill = progressBar.querySelector('.progress-fill');
+        
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="bx bx-loader-alt bx-spin"></i> Converting...';
+        progressBar.classList.add('active');
+        progressFill.style.width = '50%';
+        
+        try {
+          const fd = new FormData(e.target);
+          const res = await fetch('/api/convert/video', { method: 'POST', body: fd });
+          
+          progressFill.style.width = '100%';
+          
+          if (!res.ok) {
+            const error = await res.json();
+            throw new Error(error.error || 'Conversion failed');
+          }
+          
+          const blob = await res.blob();
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'converted.' + (fd.get('target') || 'mp4');
+          a.click();
+          URL.revokeObjectURL(url);
+          
+          // Reset form
+          setTimeout(() => {
+            e.target.reset();
+            videoFileInfo.classList.remove('active');
+            videoUploadArea.classList.remove('active');
+            videoFileName.textContent = 'No file selected';
+            progressBar.classList.remove('active');
+            progressFill.style.width = '0%';
+          }, 1000);
+        } catch (error) {
+          alert(error.message);
+          progressBar.classList.remove('active');
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = '<i class="bx bx-transfer-alt"></i> Convert Video';
+        }
+      });
+    </script>
+    
+    <!-- Footer -->
+    <footer class="modern-footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <h3>Toolflock</h3>
+                <p>Empowering creativity with premium digital tools. Built with passion for developers, designers, and creators worldwide.</p>
+            </div>
+            <div class="footer-links">
+                <div class="footer-column">
+                    <h4>Tools</h4>
+                    <a href="/pdf">PDF Tools</a>
+                    <a href="/file-converter">File Converter</a>
+                    <a href="/shortener">URL Shortener</a>
+                    <a href="/qr">QR Generator</a>
+                </div>
+                <div class="footer-column">
+                    <h4>Company</h4>
+                    <a href="/about">About Us</a>
+                    <a href="/contact">Contact</a>
+                    <a href="/privacy">Privacy Policy</a>
+                    <a href="/terms">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2025 Toolflock by Erekan. Crafted with ❤️ for the global community.</p>
+            <div class="footer-tagline">
+                <span>✨ Where Innovation Meets Utility ✨</span>
+            </div>
+        </div>
+    </footer>
+  </body>
+  </html>
+
+

@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Email Verification - Toolflock</title>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/auth-styles.css">
+    <style>
+      :root {
+        --primary-color: #7a5cff;
+        --secondary-color: #4cd1ff;
+        --black: #000000;
+        --white: #ffffff;
+        --gray: #efefef;
+        --gray-2: #757575;
+        --card: rgba(10, 14, 32, 0.85);
+        --text: #ffffff;
+        --muted: rgba(255, 255, 255, 0.7);
+        --accent: #7a5cff;
+        --accent-2: #4cd1ff;
+        --neon: #00f7ff;
+      }
+
+      * {
+        font-family: 'Inter', sans-serif;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        height: 100vh;
+        overflow: hidden;
+      }
+
+      body {
+        background: linear-gradient(135deg, #0a0e20, #1a1f35);
+        color: var(--text);
+      }
+
+      .container {
+        position: relative;
+        min-height: 100vh;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .auth-card {
+        position: relative;
+        width: 450px;
+        max-width: 90%;
+        padding: 2rem;
+        background: var(--card);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        z-index: 2;
+        transform: translateX(0);
+        transition: transform 0.6s ease-in-out;
+      }
+
+      .auth-card h2 {
+        text-align: center;
+        margin-bottom: 1.5rem;
+        font-size: 2rem;
+        font-weight: 700;
+        background: linear-gradient(90deg, var(--accent), var(--accent-2));
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-fill-color: transparent;
+      }
+
+      .input-group {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        background: rgba(255, 255, 255, 0.07);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 0.5rem 1rem;
+        transition: all 0.3s ease;
+      }
+
+      .input-group:focus-within {
+        border-color: var(--accent);
+        box-shadow: 0 0 0 2px rgba(122, 92, 255, 0.2);
+      }
+
+      .input-group i {
+        font-size: 1.2rem;
+        color: var(--muted);
+        margin-right: 1rem;
+        transition: color 0.3s ease;
+      }
+
+      .input-group:focus-within i {
+        color: var(--accent);
+      }
+
+      .input-group input {
+        flex: 1;
+        background: transparent;
+        border: none;
+        outline: none;
+        color: var(--text);
+        font-size: 1rem;
+        padding: 0.8rem 0;
+      }
+
+      .input-group input::placeholder {
+        color: var(--muted);
+      }
+
+      .btn {
+        width: 100%;
+        padding: 1rem;
+        background: linear-gradient(90deg, var(--accent), var(--accent-2));
+        border: none;
+        border-radius: 12px;
+        color: var(--white);
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(122, 92, 255, 0.2);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .btn:hover {
+        box-shadow: 0 6px 20px rgba(122, 92, 255, 0.4);
+        transform: translateY(-2px);
+      }
+
+      .btn:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      .btn-loading {
+        display: none;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+      }
+
+      .message {
+        padding: 1rem;
+        border-radius: 8px;
+        margin: 1rem 0;
+        text-align: center;
+        display: none;
+      }
+
+      .message.success {
+        background: rgba(76, 209, 255, 0.1);
+        border: 1px solid var(--secondary-color);
+        color: var(--secondary-color);
+      }
+
+      .message.error {
+        background: rgba(255, 76, 76, 0.1);
+        border: 1px solid #ff4c4c;
+        color: #ff4c4c;
+      }
+
+      .back-button-container {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        z-index: 10;
+      }
+
+      .back-button {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--muted);
+        text-decoration: none;
+        font-size: 0.9rem;
+        transition: color 0.3s ease;
+      }
+
+      .back-button:hover {
+        color: var(--accent);
+      }
+
+      .resend-container {
+        text-align: center;
+        margin-top: 1rem;
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+
+      .resend-link {
+        color: var(--accent);
+        cursor: pointer;
+        font-weight: 600;
+        text-decoration: none;
+      }
+
+      .resend-link:hover {
+        text-decoration: underline;
+      }
+
+      @media (max-width: 768px) {
+        .auth-card {
+          width: 95%;
+          padding: 1.5rem;
+          border-radius: 16px;
+        }
+
+        .auth-card h2 {
+          font-size: 1.7rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="container" class="container tech-bg sign-in">
+      <!-- BACK BUTTON -->
+      <div class="back-button-container">
+        <a href="/" class="back-button">
+          <i class='bx bx-arrow-back'></i>
+          Back to Home
+        </a>
+      </div>
+
+      <!-- VERIFICATION CARD -->
+      <div class="auth-card">
+        <h2>Email Verification</h2>
+        <p style="text-align: left; margin-bottom: 1rem; color: var(--muted);">
+          We have sent a verification link to your email address. Please open that email and click the link to verify your account.
+        </p>
+        <ul style="color: var(--muted); margin-left: 1rem; margin-bottom: 1rem;">
+          <li>Check your inbox and spam folder</li>
+          <li>The link expires in 24 hours</li>
+          <li>You can request a new link below</li>
+        </ul>
+
+        <div id="successMessage" class="message success"></div>
+        <div id="errorMessage" class="message error"></div>
+
+        <button type="button" class="btn" id="openMailBtn" style="margin-bottom: 0.75rem;">
+          <span>Open Email App</span>
+        </button>
+        
+        <div class="resend-container">
+          <span>Didn't get the email? </span>
+          <a class="resend-link" id="resendLink">Resend Verification Link</a>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Get email from URL parameter
+      const urlParams = new URLSearchParams(window.location.search);
+      const email = urlParams.get('email');
+
+      if (!email) {
+        document.getElementById('errorMessage').textContent = 'Email parameter missing';
+        document.getElementById('errorMessage').style.display = 'block';
+      }
+
+      // Optional: open mail client shortcut
+      document.getElementById('openMailBtn').addEventListener('click', () => {
+        window.location.href = 'mailto:' + (email || '');
+      });
+
+      // Resend verification link
+      document.getElementById('resendLink').addEventListener('click', async () => {
+        const resendLink = document.getElementById('resendLink');
+        const successMessage = document.getElementById('successMessage');
+        const errorMessage = document.getElementById('errorMessage');
+        
+        // Hide previous messages
+        successMessage.style.display = 'none';
+        errorMessage.style.display = 'none';
+        
+        // Show loading state
+        resendLink.textContent = 'Resending...';
+        resendLink.style.cursor = 'not-allowed';
+        
+        try {
+          const response = await fetch('/resend-verification', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({email: email}),
+          });
+
+          const result = await response.json();
+          
+          if (result.success) {
+            successMessage.textContent = result.message || 'Verification link resent successfully!';
+            successMessage.style.display = 'block';
+          } else {
+            errorMessage.textContent = result.error || 'Failed to resend verification link';
+            errorMessage.style.display = 'block';
+          }
+        } catch (error) {
+          errorMessage.textContent = 'An error occurred. Please try again.';
+          errorMessage.style.display = 'block';
+          console.error('Error:', error);
+        } finally {
+          // Reset resend link
+          resendLink.textContent = 'Resend Verification Link';
+          resendLink.style.cursor = 'pointer';
+        }
+      });
+    </script>
+  </body>
+</html>

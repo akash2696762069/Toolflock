@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - Toolflock</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <style>
+        .profile-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        
+        .profile-card {
+            background: var(--card);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 40px;
+        }
+        
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            margin-bottom: 40px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+        
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #7a5cff, #4cd1ff);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            font-weight: 700;
+            color: white;
+            flex-shrink: 0;
+        }
+        
+        .profile-info {
+            flex: 1;
+        }
+        
+        .profile-name {
+            font-size: 28px;
+            font-weight: 700;
+            margin: 0 0 8px 0;
+            background: linear-gradient(135deg, #7a5cff, #4cd1ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .profile-email {
+            color: var(--muted);
+            margin: 0 0 12px 0;
+            font-size: 16px;
+        }
+        
+        .profile-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+        
+        .profile-badge.verified {
+            background: rgba(76, 209, 255, 0.1);
+            color: #4cd1ff;
+            border: 1px solid rgba(76, 209, 255, 0.3);
+        }
+        
+        .profile-badge.unverified {
+            background: rgba(255, 193, 7, 0.1);
+            color: #ffc107;
+            border: 1px solid rgba(255, 193, 7, 0.3);
+        }
+        
+        .profile-sections {
+            display: grid;
+            gap: 30px;
+        }
+        
+        .profile-section {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 16px;
+            padding: 30px;
+        }
+        
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .section-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, rgba(122,92,255,0.2), rgba(76,209,255,0.15));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+        
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin: 0;
+        }
+        
+        .profile-form {
+            display: grid;
+            gap: 20px;
+        }
+        
+        .form-group {
+            display: grid;
+            gap: 8px;
+        }
+        
+        .form-label {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text);
+        }
+        
+        .form-input {
+            padding: 12px 16px;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 10px;
+            background: rgba(255,255,255,0.03);
+            color: var(--text);
+            font-size: 15px;
+            transition: all 0.3s ease;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #7a5cff;
+            background: rgba(122,92,255,0.05);
+        }
+        
+        .form-input:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-block;
+            text-decoration: none;
+            text-align: center;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #7a5cff, #4cd1ff);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(122,92,255,0.3);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, #ff5c5c, #ff8c8c);
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(255,92,92,0.3);
+        }
+        
+        .settings-grid {
+            display: grid;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 12px;
+        }
+        
+        .setting-info h4 {
+            margin: 0 0 4px 0;
+            font-size: 15px;
+            font-weight: 600;
+        }
+        
+        .setting-info p {
+            margin: 0;
+            font-size: 13px;
+            color: var(--muted);
+        }
+        
+        .toggle-switch {
+            width: 50px;
+            height: 26px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 13px;
+            position: relative;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: white;
+            top: 2px;
+            left: 2px;
+            transition: transform 0.3s ease;
+        }
+        
+        .toggle-switch.active {
+            background: linear-gradient(135deg, #7a5cff, #4cd1ff);
+        }
+        
+        .toggle-switch.active::after {
+            transform: translateX(24px);
+        }
+        
+        .account-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.08);
+        }
+        
+        .account-info p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 14px;
+        }
+        
+        .message-container {
+            margin-bottom: 20px;
+        }
+        
+        .success-message {
+            padding: 12px 16px;
+            background: rgba(76, 209, 255, 0.1);
+            border: 1px solid rgba(76, 209, 255, 0.3);
+            border-radius: 8px;
+            color: #4cd1ff;
+            animation: slideIn 0.3s ease;
+        }
+        
+        .error-message {
+            padding: 12px 16px;
+            background: rgba(255, 92, 92, 0.1);
+            border: 1px solid rgba(255, 92, 92, 0.3);
+            border-radius: 8px;
+            color: #ff5c5c;
+            animation: slideIn 0.3s ease;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .profile-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .profile-card {
+                padding: 20px;
+            }
+            
+            .profile-section {
+                padding: 20px;
+            }
+            
+            .account-actions {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    {% include 'header.html' %}
+    
+    <div class="container profile-container">
+        <div class="profile-card">
+            <div class="profile-header">
+                <div class="profile-avatar">
+                    <div class="avatar-initial">{{ current_user.name[0].upper() if current_user.name else 'U' }}</div>
+                </div>
+                <div class="profile-info">
+                    <h1 class="profile-name">{{ current_user.name }}</h1>
+                    <p class="profile-email">{{ current_user.email }}</p>
+                    {% if current_user.is_verified %}
+                        <span class="profile-badge verified">
+                            <i class='bx bx-check-circle'></i> Verified Account
+                        </span>
+                    {% else %}
+                        <span class="profile-badge unverified">
+                            <i class='bx bx-error-circle'></i> Unverified Account
+                        </span>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="profile-sections">
+                <!-- Personal Information Section -->
+                <div class="profile-section">
+                    <div class="section-header">
+                        <div class="section-icon">
+                            <i class='bx bx-user'></i>
+                        </div>
+                        <h2 class="section-title">Personal Information</h2>
+                    </div>
+                    <div id="profileMessage" class="message-container"></div>
+                    <form id="profileForm" class="profile-form">
+                        <div class="form-group">
+                            <label class="form-label" for="name">Full Name</label>
+                            <input type="text" id="name" name="name" class="form-input" value="{{ current_user.name }}" required minlength="2">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="email">Email Address</label>
+                            <input type="email" id="email" class="form-input" value="{{ current_user.email }}" disabled>
+                            <small style="color: var(--muted); font-size: 12px;">Email cannot be changed for security reasons</small>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class='bx bx-save'></i> Update Profile
+                        </button>
+                    </form>
+                </div>
+                
+                <!-- Security Section -->
+                <div class="profile-section">
+                    <div class="section-header">
+                        <div class="section-icon">
+                            <i class='bx bx-lock-alt'></i>
+                        </div>
+                        <h2 class="section-title">Security</h2>
+                    </div>
+                    <div id="passwordMessage" class="message-container"></div>
+                    <form id="passwordForm" class="profile-form">
+                        <div class="form-group">
+                            <label class="form-label" for="currentPassword">Current Password</label>
+                            <input type="password" id="currentPassword" name="current_password" class="form-input" required minlength="6">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="newPassword">New Password</label>
+                            <input type="password" id="newPassword" name="new_password" class="form-input" required minlength="6">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="confirmPassword">Confirm New Password</label>
+                            <input type="password" id="confirmPassword" name="confirm_password" class="form-input" required minlength="6">
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class='bx bx-key'></i> Change Password
+                        </button>
+                    </form>
+                </div>
+                
+                <!-- Preferences Section -->
+                <div class="profile-section">
+                    <div class="section-header">
+                        <div class="section-icon">
+                            <i class='bx bx-cog'></i>
+                        </div>
+                        <h2 class="section-title">Preferences</h2>
+                    </div>
+                    <div class="settings-grid">
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <h4>Dark Mode</h4>
+                                <p>Choose your preferred color scheme</p>
+                            </div>
+                            <div class="toggle-switch" id="themeToggleSwitch"></div>
+                        </div>
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <h4>Email Notifications</h4>
+                                <p>Receive updates about new features</p>
+                            </div>
+                            <div class="toggle-switch active" id="notificationsToggle"></div>
+                        </div>
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <h4>Analytics</h4>
+                                <p>Help us improve by sharing usage data</p>
+                            </div>
+                            <div class="toggle-switch active" id="analyticsToggle"></div>
+                        </div>
+                    </div>
+                    <div class="account-actions">
+                        <div class="account-info">
+                            <p><i class='bx bx-calendar'></i> Member since {{ current_user.created_at.strftime('%B %Y') if current_user.created_at else 'Recently' }}</p>
+                        </div>
+                        <button class="btn btn-danger" onclick="confirmSignOut()">
+                            <i class='bx bx-log-out'></i> Sign Out
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Theme functionality
+        const themeToggleSwitch = document.getElementById('themeToggleSwitch');
+        const body = document.body;
+        
+        // Load saved theme
+        const savedTheme = localStorage.getItem('toolflock-theme') || 'dark';
+        if (savedTheme === 'light') {
+            body.classList.add('light-theme');
+            themeToggleSwitch.classList.remove('active');
+        } else {
+            themeToggleSwitch.classList.add('active');
+        }
+        
+        function toggleTheme() {
+            body.classList.toggle('light-theme');
+            const isLight = body.classList.contains('light-theme');
+            themeToggleSwitch.classList.toggle('active', !isLight);
+            localStorage.setItem('toolflock-theme', isLight ? 'light' : 'dark');
+            
+            // Update header theme toggle if exists
+            const headerThemeToggle = document.getElementById('themeToggle');
+            if (headerThemeToggle) {
+                headerThemeToggle.textContent = isLight ? '☀️' : '🌙';
+            }
+        }
+        
+        themeToggleSwitch.addEventListener('click', toggleTheme);
+        
+        // Profile form
+        document.getElementById('profileForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData);
+            
+            // Show loading state
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="bx bx-loader-alt bx-spin"></i> Updating...';
+            submitBtn.disabled = true;
+            
+            try {
+                const response = await fetch('/profile/update', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success || response.ok) {
+                    showMessage('profileMessage', 'Profile updated successfully!', 'success');
+                    // Update displayed name
+                    document.querySelector('.profile-name').textContent = data.name;
+                    document.querySelector('.avatar-initial').textContent = data.name[0].toUpperCase();
+                    
+                    // Update header avatar if exists
+                    const headerAvatar = document.querySelector('.profile-btn .profile-avatar');
+                    if (headerAvatar) {
+                        headerAvatar.textContent = data.name[0].toUpperCase();
+                    }
+                } else {
+                    showMessage('profileMessage', result.error || 'Failed to update profile', 'error');
+                }
+            } catch (error) {
+                showMessage('profileMessage', 'Network error occurred. Please try again.', 'error');
+            } finally {
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
+        });
+        
+        // Password form
+        document.getElementById('passwordForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData);
+            
+            // Validate passwords match
+            if (data.new_password !== data.confirm_password) {
+                showMessage('passwordMessage', 'New passwords do not match', 'error');
+                return;
+            }
+            
+            // Validate password length
+            if (data.new_password.length < 6) {
+                showMessage('passwordMessage', 'New password must be at least 6 characters long', 'error');
+                return;
+            }
+            
+            // Show loading state
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="bx bx-loader-alt bx-spin"></i> Changing...';
+            submitBtn.disabled = true;
+            
+            try {
+                const response = await fetch('/profile/change-password', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success || response.ok) {
+                    showMessage('passwordMessage', 'Password changed successfully!', 'success');
+                    e.target.reset();
+                } else {
+                    showMessage('passwordMessage', result.error || 'Failed to change password', 'error');
+                }
+            } catch (error) {
+                showMessage('passwordMessage', 'Network error occurred. Please try again.', 'error');
+            } finally {
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
+        });
+        
+        // Toggle switches for preferences
+        document.getElementById('notificationsToggle').addEventListener('click', function() {
+            this.classList.toggle('active');
+            const isActive = this.classList.contains('active');
+            // Save preference (you can send this to backend if needed)
+            localStorage.setItem('toolflock-notifications', isActive);
+        });
+        
+        document.getElementById('analyticsToggle').addEventListener('click', function() {
+            this.classList.toggle('active');
+            const isActive = this.classList.contains('active');
+            // Save preference (you can send this to backend if needed)
+            localStorage.setItem('toolflock-analytics', isActive);
+        });
+        
+        // Load saved preferences
+        const savedNotifications = localStorage.getItem('toolflock-notifications');
+        if (savedNotifications !== null) {
+            document.getElementById('notificationsToggle').classList.toggle('active', savedNotifications === 'true');
+        }
+        
+        const savedAnalytics = localStorage.getItem('toolflock-analytics');
+        if (savedAnalytics !== null) {
+            document.getElementById('analyticsToggle').classList.toggle('active', savedAnalytics === 'true');
+        }
+        
+        function showMessage(containerId, message, type) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = `<div class="${type}-message">${message}</div>`;
+            setTimeout(() => {
+                container.innerHTML = '';
+            }, 5000);
+        }
+        
+        function confirmSignOut() {
+            if (confirm('Are you sure you want to sign out?')) {
+                window.location.href = '/signout';
+            }
+        }
+    </script>
+    
+    <!-- Footer -->
+    <footer class="modern-footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <h3>Toolflock</h3>
+                <p>Empowering creativity with premium digital tools. Built with passion for developers, designers, and creators worldwide.</p>
+            </div>
+            <div class="footer-links">
+                <div class="footer-column">
+                    <h4>Tools</h4>
+                    <a href="/pdf">PDF Tools</a>
+                    <a href="/file-converter">File Converter</a>
+                    <a href="/shortener">URL Shortener</a>
+                    <a href="/qr">QR Generator</a>
+                </div>
+                <div class="footer-column">
+                    <h4>Company</h4>
+                    <a href="/about">About Us</a>
+                    <a href="/contact">Contact</a>
+                    <a href="/privacy">Privacy Policy</a>
+                    <a href="/terms">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2025 Toolflock by Erekan. Crafted with ❤️ for the global community.</p>
+            <div class="footer-tagline">
+                <span>✨ Where Innovation Meets Utility ✨</span>
+            </div>
+        </div>
+    </footer>
+    <script src="/static/profile-drawer.js"></script>
+</body>
+</html>

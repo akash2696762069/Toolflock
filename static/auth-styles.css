@@ -1,0 +1,85 @@
+/* Tech-themed background for auth slider */
+.tech-bg::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100vh;
+  width: 300vw;
+  transform: translate(35%, 0);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  /* Use the provided image as background */
+  background-image: url('https://i.postimg.cc/K4Sf1hL3/image-removebg-preview.png');
+  background-size: 20% auto;
+  background-position: 15% center;
+  background-repeat: no-repeat;
+  background-blend-mode: overlay;
+  transition: 1s ease-in-out;
+  z-index: 1;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  border-bottom-right-radius: max(50vw, 50vh);
+  border-top-left-radius: max(50vw, 50vh);
+}
+
+/* Subtle neon glow behind the PNG for a premium look */
+.tech-bg::after {
+  content: "";
+  position: absolute;
+  inset: -10% -20% -10% 40%;
+  background: radial-gradient(closest-side, rgba(122,92,255,0.35), transparent 60%),
+              radial-gradient(closest-side, rgba(76,209,255,0.25), transparent 60%);
+  filter: blur(24px);
+  pointer-events: none;
+  z-index: 0;
+  transition: opacity .6s ease, transform 1.2s ease;
+}
+
+.tech-bg.sign-in::before {
+  transform: translate(0, 0);
+  right: 50%;
+}
+
+.tech-bg.sign-up::before {
+  transform: translate(100%, 0);
+  right: 50%;
+}
+
+/* Parallax-ish drift on animation frames */
+.tech-bg.sign-in::after { transform: translateX(-2%); }
+.tech-bg.sign-up::after { transform: translateX(2%); }
+
+@media (max-width: 768px) {
+  .tech-bg::before {
+    width: 220vw;
+    transform: translate(20%, 0);
+    border-bottom-right-radius: 40vw;
+    border-top-left-radius: 40vw;
+  }
+}
+
+/* Inline hero image in the slider layout */
+.auth-hero-img {
+  position: absolute;
+  left: clamp(12px, 6vw, 48px);
+  bottom: clamp(12px, 8vh, 80px);
+  width: min(38vw, 520px);
+  max-width: 520px;
+  height: auto;
+  z-index: 2;
+  filter: drop-shadow(0 10px 40px rgba(0,0,0,0.55));
+  opacity: .95;
+  pointer-events: none;
+}
+
+@media (max-width: 920px) {
+  .auth-hero-img {
+    width: min(46vw, 420px);
+    opacity: .9;
+  }
+}
+
+@media (max-width: 640px) {
+  .auth-hero-img {
+    display: none; /* keep mobile minimal */
+  }
+}

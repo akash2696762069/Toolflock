@@ -1,0 +1,81 @@
+<div class="navbar">
+  <div>
+    <a href="/" class="brand">Toolflock</a><span class="byline">by Erekan</span>
+  </div>
+  <div class="nav-links">
+    <a href="/">Home</a>
+    <a href="/all-tools">All Tools</a>
+    <button class="theme-toggle" id="themeToggle" title="Toggle theme">🌙</button>
+    {% if current_user.is_authenticated %}
+      <div class="profile-menu">
+        <button class="profile-btn" id="profileBtn" aria-label="Open profile" data-initial="{{ current_user.name[0].upper() }}">
+          <svg class="profile-icon-premium" width="26" height="26" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <defs>
+              <linearGradient id="grad-prem" x1="0" y1="0" x2="24" y2="24" gradientUnits="userSpaceOnUse">
+                <stop offset="0" stop-color="#7a5cff"/>
+                <stop offset="1" stop-color="#4cd1ff"/>
+              </linearGradient>
+            </defs>
+            <path d="M12 12c2.761 0 5-2.239 5-5S14.761 2 12 2 7 4.239 7 7s2.239 5 5 5Z" stroke="url(#grad-prem)" stroke-width="1.8"/>
+            <path d="M4 20.5c0-3.314 3.582-6 8-6s8 2.686 8 6" stroke="url(#grad-prem)" stroke-width="1.8" stroke-linecap="round"/>
+            <circle cx="19.5" cy="4.5" r="2" fill="url(#grad-prem)"/>
+          </svg>
+        </button>
+      </div>
+    {% else %}
+      <a href="/signin" class="get-started-btn">Get Started</a>
+    {% endif %}
+  </div>
+</div>
+
+<style>
+.get-started-btn {
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  color: white;
+  padding: 8px 16px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+.get-started-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(122,92,255,0.3);
+}
+
+.theme-toggle {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 8px;
+  padding: 8px 12px;
+  color: var(--text);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 16px;
+}
+.theme-toggle:hover {
+  background: rgba(255,255,255,0.2);
+}
+</style>
+
+<script>
+// Theme toggle functionality
+const themeToggle = document.getElementById('themeToggle');
+const body = document.body;
+
+// Load saved theme
+const savedTheme = localStorage.getItem('toolflock-theme') || 'dark';
+if (savedTheme === 'light') {
+  body.classList.add('light-theme');
+  themeToggle.textContent = '☀️';
+}
+
+if (themeToggle) {
+  themeToggle.addEventListener('click', () => {
+    body.classList.toggle('light-theme');
+    const isLight = body.classList.contains('light-theme');
+    themeToggle.textContent = isLight ? '☀️' : '🌙';
+    localStorage.setItem('toolflock-theme', isLight ? 'light' : 'dark');
+  });
+}
+</script>

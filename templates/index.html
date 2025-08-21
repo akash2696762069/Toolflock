@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Age & Time Difference Calculator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    {% include 'header.html' %}
+    <div class="container">
+      <header>
+        <h1>Age & Time Difference</h1>
+        <p>Enter two dates to calculate the difference.</p>
+      </header>
+
+      <section class="card">
+        <form id="diff-form">
+          <div class="field">
+            <label for="startDate">Start date</label>
+            <input id="startDate" name="startDate" type="date" required />
+          </div>
+          <div class="field">
+            <label for="endDate">End date</label>
+            <input id="endDate" name="endDate" type="date" required />
+          </div>
+          <button type="submit" class="btn">Calculate</button>
+        </form>
+
+        <div id="error" class="error" hidden></div>
+
+        <div id="results" class="results" hidden>
+          <div class="result-grid">
+            <div class="result-item">
+              <div class="label">Years</div>
+              <div class="value" id="years">—</div>
+            </div>
+            <div class="result-item">
+              <div class="label">Total Months</div>
+              <div class="value" id="totalMonths">—</div>
+            </div>
+            <div class="result-item">
+              <div class="label">Months</div>
+              <div class="value" id="months">—</div>
+            </div>
+            <div class="result-item">
+              <div class="label">Days</div>
+              <div class="value" id="days">—</div>
+            </div>
+            <div class="result-item">
+              <div class="label">Extra Days</div>
+              <div class="value" id="extraDays">—</div>
+            </div>
+            <div class="result-item">
+              <div class="label">Total Days</div>
+              <div class="value" id="totalDays">—</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <footer>
+        <p>Built with Flask.</p>
+      </footer>
+    </div>
+
+    <script src="/static/profile-drawer.js"></script>
+    <script>
+      const form = document.getElementById('diff-form');
+      const errorBox = document.getElementById('error');
+      const results = document.getElementById('results');
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        errorBox.hidden = true;
+        results.hidden = true;
+
+        const startDate = document.getElementById('startDate').value;
+        const endDate = document.getElementById('endDate').value;
+
+        try {
+          const res = await fetch('/api/diff', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ startDate, endDate }),
+          });
+          const data = await res.json();
+          if (!res.ok) {
+            throw new Error(data.error || 'Something went wrong');
+          }
+
+          document.getElementById('years').textContent = data.years;
+          document.getElementById('months').textContent = data.months;
+          document.getElementById('days').textContent = data.days;
+          document.getElementById('totalMonths').textContent = data.totalMonths;
+          document.getElementById('extraDays').textContent = data.extraDays;
+          document.getElementById('totalDays').textContent = data.totalDays;
+
+          results.hidden = false;
+        } catch (err) {
+          errorBox.textContent = err.message;
+          errorBox.hidden = false;
+        }
+      });
+    </script>
+  </body>
+  </html>
+
+

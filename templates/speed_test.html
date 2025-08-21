@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Internet Speed Test - Toolflock</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel='stylesheet' href='/static/styles.css' />
+    <style>
+        :root {
+            --bg: #0a0a0f;
+            --card: #12121a;
+            --text: #ffffff;
+            --muted: #94959f;
+            --accent: #7a5cff;
+            --neon: #00ffcc;
+            --error: #ff4757;
+            --success: #00c851;
+            --warning: #ffbb33;
+        }
+        
+        body.light-theme {
+            --bg: #f8f9fa;
+            --card: #ffffff;
+            --text: #1a1a2e;
+            --muted: #6c757d;
+            --accent: #6c5ce7;
+            --neon: #00b894;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Footer styles as backup in case main CSS fails to load */
+        .modern-footer {
+            background: linear-gradient(135deg, rgba(10, 14, 32, 0.95), rgba(5, 8, 22, 0.98));
+            border-top: 1px solid rgba(255,255,255,0.08);
+            margin-top: 60px;
+            padding: 48px 0 24px;
+            backdrop-filter: blur(20px);
+        }
+        
+        .footer-content {
+            max-width: 1040px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 48px;
+            margin-bottom: 32px;
+        }
+        
+        .footer-brand h3 {
+            margin: 0 0 16px 0;
+            font-size: 28px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent), var(--neon));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .footer-brand p {
+            margin: 0;
+            color: var(--muted);
+            line-height: 1.6;
+            font-size: 16px;
+        }
+        
+        .footer-links {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 32px;
+        }
+        
+        .footer-column h4 {
+            margin: 0 0 16px 0;
+            color: var(--text);
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        .footer-column a {
+            display: block;
+            color: var(--muted);
+            text-decoration: none;
+            margin-bottom: 8px;
+            transition: color 0.3s ease;
+            font-size: 14px;
+        }
+        
+        .footer-column a:hover {
+            color: var(--accent);
+        }
+        
+        .footer-bottom {
+            border-top: 1px solid rgba(255,255,255,0.06);
+            padding-top: 24px;
+            text-align: center;
+        }
+        
+        .footer-tagline {
+            font-size: 16px;
+            font-weight: 600;
+            background: linear-gradient(135deg, var(--accent), var(--neon));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        @media (max-width: 768px) {
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 32px;
+            }
+            
+            .footer-links {
+                grid-template-columns: 1fr;
+                gap: 24px;
+            }
+        }
+        
+        .navbar {
+            background: var(--card);
+            border-bottom: 1px solid rgba(122, 92, 255, 0.1);
+            padding: 16px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .brand {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text);
+            text-decoration: none;
+        }
+        
+        .byline { font-size: 12px; color: var(--muted); margin-left: 8px; }
+        
+        .nav-links {
+            display: flex;
+            gap: 24px;
+            align-items: center;
+        }
+        
+        .nav-links a {
+            color: var(--text);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover { color: var(--accent); }
+        
+        .theme-toggle {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: var(--text);
+        }
+        
+        .profile-menu { position: relative; }
+        
+        .profile-btn {
+            background: linear-gradient(135deg, var(--accent), var(--neon));
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        
+        .profile-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            margin-top: 8px;
+            background: var(--card);
+            border: 1px solid rgba(122, 92, 255, 0.2);
+            border-radius: 8px;
+            padding: 8px;
+            min-width: 150px;
+            display: none;
+        }
+        
+        .profile-dropdown a {
+            display: block;
+            padding: 8px 12px;
+            color: var(--text);
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background 0.3s;
+        }
+        
+        .profile-dropdown a:hover { background: rgba(122, 92, 255, 0.1); }
+        
+        .get-started-btn {
+            background: linear-gradient(135deg, var(--accent), var(--neon));
+            color: white;
+            padding: 10px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: transform 0.3s;
+        }
+        
+        .get-started-btn:hover { transform: translateY(-2px); }
+        
+        .speed-container {
+            flex: 1;
+            max-width: 800px;
+            width: 100%;
+            margin: 60px auto;
+            padding: 0 20px;
+        }
+        
+        .tool-header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+        
+        .tool-header h1 {
+            font-size: 48px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent), var(--neon));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 16px;
+        }
+        
+        .tool-header p { color: var(--muted); font-size: 18px; }
+        
+        .speed-card {
+            background: var(--card);
+            border: 1px solid rgba(122, 92, 255, 0.1);
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .speedometer {
+            width: 300px;
+            height: 300px;
+            margin: 0 auto 40px;
+            position: relative;
+        }
+        
+        .speed-circle {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: conic-gradient(
+                from 180deg,
+                rgba(255, 71, 87, 0.3) 0deg,
+                rgba(255, 187, 51, 0.3) 120deg,
+                rgba(0, 200, 81, 0.3) 240deg,
+                rgba(122, 92, 255, 0.3) 360deg
+            );
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 40px rgba(122, 92, 255, 0.2);
+        }
+        
+        .speed-inner {
+            width: 85%;
+            height: 85%;
+            border-radius: 50%;
+            background: var(--card);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .speed-value {
+            font-size: 64px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent), var(--neon));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1;
+        }
+        
+        .speed-unit {
+            font-size: 18px;
+            color: var(--muted);
+            margin-top: 8px;
+        }
+        
+        .speed-label {
+            font-size: 14px;
+            color: var(--muted);
+            margin-top: 4px;
+        }
+        
+        .btn-start {
+            background: linear-gradient(135deg, var(--accent), var(--neon));
+            color: white;
+            border: none;
+            padding: 16px 48px;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            margin: 0 auto;
+        }
+        
+        .btn-start:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(122, 92, 255, 0.3);
+        }
+        
+        .btn-start:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            margin-top: 40px;
+        }
+        
+        .result-card {
+            background: var(--bg);
+            padding: 24px;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid rgba(122, 92, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .result-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+        
+        .result-icon {
+            font-size: 32px;
+            margin-bottom: 12px;
+            color: var(--accent);
+        }
+        
+        .result-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 4px;
+        }
+        
+        .result-label {
+            font-size: 14px;
+            color: var(--muted);
+        }
+        
+        .progress-text {
+            text-align: center;
+            margin-top: 24px;
+            color: var(--muted);
+            font-size: 14px;
+        }
+        
+        .bx-spin {
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .testing {
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        @media (max-width: 768px) {
+            .tool-header h1 { font-size: 32px; }
+            .speedometer { width: 250px; height: 250px; }
+            .speed-value { font-size: 48px; }
+            .results-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div>
+            <a href="/" class="brand">Toolflock</a><span class="byline">by Erekan</span>
+        </div>
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/all-tools">All Tools</a>
+            <button class="theme-toggle" id="themeToggle" title="Toggle theme">🌙</button>
+            {% if current_user.is_authenticated %}
+                <div class="profile-menu">
+                    <button class="profile-btn" id="profileBtn">
+                        <i class='bx bx-user'></i>
+                        {{ current_user.username }}
+                    </button>
+                    <div class="profile-dropdown" id="profileDropdown">
+                        <a href="/profile">Profile</a>
+                        <a href="/signout">Sign Out</a>
+                    </div>
+                </div>
+            {% else %}
+                <a href="/signin" class="get-started-btn">Get Started</a>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div class="speed-container">
+        <div class="tool-header">
+            <h1>Internet Speed Test</h1>
+            <p>Test your internet connection speed with our advanced server-side analysis</p>
+        </div>
+        
+        <div class="speed-card">
+            <div class="speedometer" id="speedometer">
+                <div class="speed-circle">
+                    <div class="speed-inner">
+                        <div class="speed-value" id="speedValue">0</div>
+                        <div class="speed-unit">Mbps</div>
+                        <div class="speed-label" id="speedLabel">Ready</div>
+                    </div>
+                </div>
+            </div>
+            
+            <button type="button" class="btn-start" id="startBtn">
+                <i class='bx bx-play-circle'></i>
+                Start Speed Test
+            </button>
+            
+            <div class="progress-text" id="progressText"></div>
+            
+            <div class="results-grid" id="resultsGrid" style="display: none;">
+                <div class="result-card">
+                    <i class='bx bx-download result-icon'></i>
+                    <div class="result-value" id="downloadSpeed">--</div>
+                    <div class="result-label">Download Speed</div>
+                </div>
+                <div class="result-card">
+                    <i class='bx bx-upload result-icon'></i>
+                    <div class="result-value" id="uploadSpeed">--</div>
+                    <div class="result-label">Upload Speed</div>
+                </div>
+                <div class="result-card">
+                    <i class='bx bx-wifi result-icon'></i>
+                    <div class="result-value" id="pingValue">--</div>
+                    <div class="result-label">Ping/Latency</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer style="text-align: center; padding: 32px 20px; color: var(--muted); font-size: 14px;">
+        <p>© 2025 Toolflock by Erekan. All rights reserved.</p>
+        <p style="margin-top: 8px;">Accurate speed testing powered by advanced algorithms 🚀</p>
+    </footer>
+    
+    <script src="/static/profile-drawer.js"></script>
+    <script>
+        // Theme toggle
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        
+        const savedTheme = localStorage.getItem('toolflock-theme') || 'dark';
+        if (savedTheme === 'light') {
+            body.classList.add('light-theme');
+            themeToggle.textContent = '☀️';
+        }
+        
+        if (themeToggle) {
+            themeToggle.addEventListener('click', () => {
+                body.classList.toggle('light-theme');
+                const isLight = body.classList.contains('light-theme');
+                themeToggle.textContent = isLight ? '☀️' : '🌙';
+                localStorage.setItem('toolflock-theme', isLight ? 'light' : 'dark');
+            });
+        }
+        
+        // Profile dropdown
+        const profileBtn = document.getElementById('profileBtn');
+        const profileDropdown = document.getElementById('profileDropdown');
+        
+        if (profileBtn && profileDropdown) {
+            profileBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                profileDropdown.style.display = profileDropdown.style.display === 'block' ? 'none' : 'block';
+            });
+            
+            document.addEventListener('click', () => {
+                profileDropdown.style.display = 'none';
+            });
+        }
+        
+        // Speed test functionality
+        const startBtn = document.getElementById('startBtn');
+        const speedValue = document.getElementById('speedValue');
+        const speedLabel = document.getElementById('speedLabel');
+        const progressText = document.getElementById('progressText');
+        const resultsGrid = document.getElementById('resultsGrid');
+        const speedometer = document.getElementById('speedometer');
+        
+        let testRunning = false;
+        
+        function animateSpeed(targetSpeed, duration = 2000) {
+            const start = parseFloat(speedValue.textContent) || 0;
+            const startTime = Date.now();
+            
+            function update() {
+                const elapsed = Date.now() - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const easeProgress = 1 - Math.pow(1 - progress, 3); // Ease out cubic
+                const current = start + (targetSpeed - start) * easeProgress;
+                
+                speedValue.textContent = current.toFixed(1);
+                
+                if (progress < 1) {
+                    requestAnimationFrame(update);
+                }
+            }
+            
+            requestAnimationFrame(update);
+        }
+        
+        startBtn.addEventListener('click', async () => {
+            if (testRunning) return;
+            
+            testRunning = true;
+            const originalContent = startBtn.innerHTML;
+            startBtn.disabled = true;
+            startBtn.innerHTML = '<i class="bx bx-loader-alt bx-spin"></i> Testing...';
+            
+            resultsGrid.style.display = 'none';
+            speedometer.classList.add('testing');
+            speedValue.textContent = '0';
+            speedLabel.textContent = 'Testing...';
+            progressText.textContent = 'Initializing speed test...';
+            
+            try {
+                // Simulate progress updates
+                setTimeout(() => {
+                    progressText.textContent = 'Testing download speed...';
+                    speedLabel.textContent = 'Download';
+                    animateSpeed(50 + Math.random() * 100);
+                }, 1000);
+                
+                setTimeout(() => {
+                    progressText.textContent = 'Testing upload speed...';
+                    speedLabel.textContent = 'Upload';
+                    animateSpeed(20 + Math.random() * 50);
+                }, 8000);
+                
+                setTimeout(() => {
+                    progressText.textContent = 'Measuring latency...';
+                    speedLabel.textContent = 'Latency';
+                    speedValue.textContent = '--';
+                }, 15000);
+                
+                const response = await fetch('/api/speedtest', {
+                    method: 'POST'
+                });
+                
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(data.error || 'Speed test failed');
+                }
+                
+                // Display results
+                speedometer.classList.remove('testing');
+                speedValue.textContent = data.downloadMbps || '0';
+                speedLabel.textContent = 'Download';
+                progressText.textContent = 'Test completed successfully!';
+                
+                document.getElementById('downloadSpeed').textContent = `${data.downloadMbps || 0} Mbps`;
+                document.getElementById('uploadSpeed').textContent = `${data.uploadMbps || 0} Mbps`;
+                document.getElementById('pingValue').textContent = `${data.pingMs || 0} ms`;
+                
+                resultsGrid.style.display = 'grid';
+                
+                // Animate to download speed
+                animateSpeed(parseFloat(data.downloadMbps) || 0, 1000);
+                
+            } catch (error) {
+                alert('Error: ' + error.message);
+                speedometer.classList.remove('testing');
+                speedValue.textContent = '0';
+                speedLabel.textContent = 'Error';
+                progressText.textContent = 'Test failed. Please try again.';
+            } finally {
+                testRunning = false;
+                startBtn.disabled = false;
+                startBtn.innerHTML = originalContent;
+            }
+        });
+    </script>
+    
+    <!-- Footer -->
+    <footer class="modern-footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <h3>Toolflock</h3>
+                <p>Empowering creativity with premium digital tools. Built with passion for developers, designers, and creators worldwide.</p>
+            </div>
+            <div class="footer-links">
+                <div class="footer-column">
+                    <h4>Tools</h4>
+                    <a href="/pdf">PDF Tools</a>
+                    <a href="/file-converter">File Converter</a>
+                    <a href="/shortener">URL Shortener</a>
+                    <a href="/qr">QR Generator</a>
+                </div>
+                <div class="footer-column">
+                    <h4>Company</h4>
+                    <a href="/about">About Us</a>
+                    <a href="/contact">Contact</a>
+                    <a href="/privacy">Privacy Policy</a>
+                    <a href="/terms">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2025 Toolflock by Erekan. Crafted with ❤️ for the global community.</p>
+            <div class="footer-tagline">
+                <span>✨ Where Innovation Meets Utility ✨</span>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
+
+

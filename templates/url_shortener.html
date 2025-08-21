@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL Shortener - Toolflock</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="/static/styles.css">
+    <style>
+        :root {
+            --bg: #0a0a0f;
+            --card: #12121a;
+            --text: #ffffff;
+            --muted: #94959f;
+            --accent: #7a5cff;
+            --neon: #00ffcc;
+            --error: #ff4757;
+            --success: #00c851;
+        }
+        
+        body.light-theme {
+            --bg: #f8f9fa;
+            --card: #ffffff;
+            --text: #1a1a2e;
+            --muted: #6c757d;
+            --accent: #6c5ce7;
+            --neon: #00b894;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .navbar {
+            background: var(--card);
+            border-bottom: 1px solid rgba(122, 92, 255, 0.1);
+            padding: 16px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .brand {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text);
+            text-decoration: none;
+        }
+        
+        .byline { font-size: 12px; color: var(--muted); margin-left: 8px; }
+        
+        .nav-links {
+            display: flex;
+            gap: 24px;
+            align-items: center;
+        }
+        
+        .nav-links a {
+            color: var(--text);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover { color: var(--accent); }
+        
+        .theme-toggle {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: var(--text);
+        }
+        
+        .profile-menu { position: relative; }
+        
+        .profile-btn {
+            background: linear-gradient(135deg, var(--accent), var(--neon));
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        
+        .profile-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            margin-top: 8px;
+            background: var(--card);
+            border: 1px solid rgba(122, 92, 255, 0.2);
+            border-radius: 8px;
+            padding: 8px;
+            min-width: 150px;
+            display: none;
+        }
+        
+        .profile-dropdown a {
+            display: block;
+            padding: 8px 12px;
+            color: var(--text);
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background 0.3s;
+        }
+        
+        .profile-dropdown a:hover { background: rgba(122, 92, 255, 0.1); }
+        
+        .get-started-btn {
+            background: linear-gradient(135deg, var(--accent), var(--neon));
+            color: white;
+            padding: 10px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: transform 0.3s;
+        }
+        
+        .get-started-btn:hover { transform: translateY(-2px); }
+        
+        .shortener-container {
+            flex: 1;
+            max-width: 800px;
+            width: 100%;
+            margin: 60px auto;
+            padding: 0 20px;
+        }
+        
+        .tool-header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+        
+        .tool-header h1 {
+            font-size: 48px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent), var(--neon));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 16px;
+        }
+        
+        .tool-header p { color: var(--muted); font-size: 18px; }
+        
+        .shortener-card {
+            background: var(--card);
+            border: 1px solid rgba(122, 92, 255, 0.1);
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .input-group {
+            margin-bottom: 24px;
+        }
+        
+        .input-group label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: var(--muted);
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+        
+        .input-group label i {
+            color: var(--accent);
+        }
+        
+        .url-input-wrapper {
+            position: relative;
+        }
+        
+        .url-input {
+            width: 100%;
+            background: var(--bg);
+            border: 1px solid rgba(122, 92, 255, 0.2);
+            border-radius: 12px;
+            padding: 16px 20px;
+            color: var(--text);
+            font-size: 16px;
+            transition: all 0.3s ease;
+            margin-bottom: 16px;
+        }
+        
+        .url-input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(122, 92, 255, 0.1);
+        }
+        
+        .url-input.error {
+            border-color: var(--error);
+        }
+        
+        .shorten-btn {
+            width: 100%;
+            background: linear-gradient(135deg, var(--accent), var(--neon));
+            color: white;
+            border: none;
+            padding: 16px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .shorten-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(122, 92, 255, 0.3);
+        }
+        
+        .shorten-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .result-section {
+            margin-top: 32px;
+            padding: 24px;
+            background: var(--bg);
+            border: 1px solid rgba(122, 92, 255, 0.2);
+            border-radius: 12px;
+            display: none;
+        }
+        
+        .result-section.show {
+            display: block;
+        }
+        
+        .result-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        
+        .result-header i {
+            font-size: 24px;
+            color: var(--success);
+        }
+        
+        .result-header h3 {
+            color: var(--text);
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .short-url-display {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: var(--card);
+            border: 1px solid rgba(122, 92, 255, 0.1);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+        
+        .short-url-text {
+            flex: 1;
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--accent);
+            word-break: break-all;
+        }
+        
+        .copy-btn {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .copy-btn:hover {
+            background: var(--neon);
+        }
+        
+        .copy-btn.copied {
+            background: var(--success);
+        }
+        
+        .url-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 16px;
+            margin-top: 20px;
+        }
+        
+        .stat-item {
+            text-align: center;
+            padding: 16px;
+            background: var(--card);
+            border: 1px solid rgba(122, 92, 255, 0.1);
+            border-radius: 8px;
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 4px;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: var(--muted);
+        }
+        
+        .error-message {
+            background: rgba(255, 71, 87, 0.1);
+            border: 1px solid var(--error);
+            color: var(--error);
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-top: 16px;
+            display: none;
+        }
+        
+        .error-message.show {
+            display: block;
+        }
+        
+        /* Override styles.css footer styles for proper display */
+        .modern-footer {
+            background: linear-gradient(135deg, rgba(10, 14, 32, 0.95), rgba(5, 8, 22, 0.98));
+            border-top: 1px solid rgba(255,255,255,0.08);
+            margin-top: 60px;
+            padding: 48px 0 24px;
+            backdrop-filter: blur(20px);
+        }
+
+        .footer-content {
+            max-width: 1040px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 48px;
+            margin-bottom: 32px;
+        }
+
+        .footer-brand h3 {
+            margin: 0 0 16px 0;
+            font-size: 28px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent), var(--neon));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .footer-brand p {
+            margin: 0;
+            color: var(--muted);
+            line-height: 1.6;
+            font-size: 16px;
+        }
+
+        .footer-links {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 32px;
+        }
+
+        .footer-column h4 {
+            margin: 0 0 16px 0;
+            color: var(--text);
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .footer-column a {
+            display: block;
+            color: var(--muted);
+            text-decoration: none;
+            margin-bottom: 8px;
+            transition: color 0.3s ease;
+            font-size: 14px;
+        }
+
+        .footer-column a:hover {
+            color: var(--accent);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255,255,255,0.06);
+            padding-top: 24px;
+            text-align: center;
+            max-width: 1040px;
+            margin: 0 auto;
+            padding-left: 20px;
+            padding-right: 20px;
+        }
+
+        .footer-bottom p {
+            margin: 0 0 12px 0;
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .footer-tagline {
+            font-size: 16px;
+            font-weight: 600;
+            background: linear-gradient(135deg, var(--accent), var(--neon));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        /* Light theme footer styles */
+        body.light-theme .modern-footer {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 250, 252, 0.98));
+            border-top: 1px solid rgba(0,0,0,0.08);
+        }
+
+        @media (max-width: 768px) {
+            .tool-header h1 { font-size: 32px; }
+            .shortener-card { padding: 24px; }
+            
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 32px;
+            }
+            
+            .footer-links {
+                grid-template-columns: 1fr;
+                gap: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div>
+            <a href="/" class="brand">Toolflock</a><span class="byline">by Erekan</span>
+        </div>
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/all-tools">All Tools</a>
+            <button class="theme-toggle" id="themeToggle" title="Toggle theme">🌙</button>
+            {% if current_user.is_authenticated %}
+                <div class="profile-menu">
+                    <button class="profile-btn" id="profileBtn">
+                        <i class='bx bx-user'></i>
+                        {{ current_user.username }}
+                    </button>
+                    <div class="profile-dropdown" id="profileDropdown">
+                        <a href="/profile">Profile</a>
+                        <a href="/signout">Sign Out</a>
+                    </div>
+                </div>
+            {% else %}
+                <a href="/signin" class="get-started-btn">Get Started</a>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div class="shortener-container">
+        <div class="tool-header">
+            <h1>URL Shortener</h1>
+            <p>Create short, shareable links in seconds</p>
+        </div>
+        
+        <div class="shortener-card">
+            <form id="shortenForm">
+                <div class="input-group">
+                    <label>
+                        <i class='bx bx-link'></i>
+                        Enter your long URL
+                    </label>
+                    <input type="url" class="url-input" id="urlInput" name="url" 
+                           placeholder="https://example.com/very/long/url/that/needs/shortening" required>
+                    <button type="submit" class="shorten-btn" id="shortenBtn">
+                        <i class='bx bx-cut'></i>
+                        Shorten
+                    </button>
+                </div>
+            </form>
+            
+            <div class="error-message" id="errorMessage"></div>
+            
+            <div class="result-section" id="resultSection">
+                <div class="result-header">
+                    <i class='bx bx-check-circle'></i>
+                    <h3>Your shortened URL is ready!</h3>
+                </div>
+                
+                <div class="short-url-display">
+                    <div class="short-url-text" id="shortUrlText"></div>
+                    <button class="copy-btn" id="copyBtn">
+                        <i class='bx bx-copy'></i>
+                        Copy
+                    </button>
+                </div>
+                
+                <div class="url-stats">
+                    <div class="stat-item">
+                        <div class="stat-value" id="originalLength">0</div>
+                        <div class="stat-label">Original Length</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="shortLength">0</div>
+                        <div class="stat-label">Short Length</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="savedChars">0</div>
+                        <div class="stat-label">Characters Saved</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    
+    <script src="/static/profile-drawer.js"></script>
+    <script>
+        // Theme toggle
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        
+        const savedTheme = localStorage.getItem('toolflock-theme') || 'dark';
+        if (savedTheme === 'light') {
+            body.classList.add('light-theme');
+            themeToggle.textContent = '☀️';
+        }
+        
+        if (themeToggle) {
+            themeToggle.addEventListener('click', () => {
+                body.classList.toggle('light-theme');
+                const isLight = body.classList.contains('light-theme');
+                themeToggle.textContent = isLight ? '☀️' : '🌙';
+                localStorage.setItem('toolflock-theme', isLight ? 'light' : 'dark');
+            });
+        }
+        
+        // Profile dropdown
+        const profileBtn = document.getElementById('profileBtn');
+        const profileDropdown = document.getElementById('profileDropdown');
+        
+        if (profileBtn && profileDropdown) {
+            profileBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                profileDropdown.style.display = profileDropdown.style.display === 'block' ? 'none' : 'block';
+            });
+            
+            document.addEventListener('click', () => {
+                profileDropdown.style.display = 'none';
+            });
+        }
+        
+        // URL Shortener functionality
+        const form = document.getElementById('shortenForm');
+        const urlInput = document.getElementById('urlInput');
+        const shortenBtn = document.getElementById('shortenBtn');
+        const errorMessage = document.getElementById('errorMessage');
+        const resultSection = document.getElementById('resultSection');
+        const shortUrlText = document.getElementById('shortUrlText');
+        const copyBtn = document.getElementById('copyBtn');
+        const originalLength = document.getElementById('originalLength');
+        const shortLength = document.getElementById('shortLength');
+        const savedChars = document.getElementById('savedChars');
+        
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.classList.add('show');
+            urlInput.classList.add('error');
+        }
+        
+        function hideError() {
+            errorMessage.classList.remove('show');
+            urlInput.classList.remove('error');
+        }
+        
+        function showResult(shortUrl, originalUrl) {
+            shortUrlText.textContent = shortUrl;
+            originalLength.textContent = originalUrl.length;
+            shortLength.textContent = shortUrl.length;
+            savedChars.textContent = originalUrl.length - shortUrl.length;
+            resultSection.classList.add('show');
+        }
+        
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            hideError();
+            
+            const url = urlInput.value.trim();
+            if (!url) {
+                showError('Please enter a URL');
+                return;
+            }
+            
+            // Basic URL validation
+            try {
+                new URL(url);
+            } catch {
+                showError('Please enter a valid URL');
+                return;
+            }
+            
+            const originalContent = shortenBtn.innerHTML;
+            shortenBtn.disabled = true;
+            shortenBtn.innerHTML = '<i class="bx bx-loader-alt bx-spin"></i> Shortening...';
+            
+            try {
+                const response = await fetch('/api/shorten', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ url })
+                });
+                
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(data.error || 'Failed to shorten URL');
+                }
+                
+                showResult(data.shortUrl, url);
+                
+            } catch (error) {
+                showError(error.message);
+            } finally {
+                shortenBtn.disabled = false;
+                shortenBtn.innerHTML = originalContent;
+            }
+        });
+        
+        copyBtn.addEventListener('click', async () => {
+            try {
+                await navigator.clipboard.writeText(shortUrlText.textContent);
+                const originalContent = copyBtn.innerHTML;
+                copyBtn.classList.add('copied');
+                copyBtn.innerHTML = '<i class="bx bx-check"></i> Copied!';
+                
+                setTimeout(() => {
+                    copyBtn.classList.remove('copied');
+                    copyBtn.innerHTML = originalContent;
+                }, 2000);
+            } catch (error) {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = shortUrlText.textContent;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                
+                copyBtn.innerHTML = '<i class="bx bx-check"></i> Copied!';
+                setTimeout(() => {
+                    copyBtn.innerHTML = '<i class="bx bx-copy"></i> Copy';
+                }, 2000);
+            }
+        });
+        
+        // Clear error on input
+        urlInput.addEventListener('input', hideError);
+    </script>
+    
+    <!-- Footer -->
+    <footer class="modern-footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <h3>Toolflock</h3>
+                <p>Empowering creativity with premium digital tools. Built with passion for developers, designers, and creators worldwide.</p>
+            </div>
+            <div class="footer-links">
+                <div class="footer-column">
+                    <h4>Tools</h4>
+                    <a href="/pdf">PDF Tools</a>
+                    <a href="/file-converter">File Converter</a>
+                    <a href="/shortener">URL Shortener</a>
+                    <a href="/qr">QR Generator</a>
+                </div>
+                <div class="footer-column">
+                    <h4>Company</h4>
+                    <a href="/about">About Us</a>
+                    <a href="/contact">Contact</a>
+                    <a href="/privacy">Privacy Policy</a>
+                    <a href="/terms">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2025 Toolflock by Erekan. Crafted with ❤️ for the global community.</p>
+            <div class="footer-tagline">
+                <span>✨ Where Innovation Meets Utility ✨</span>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
+
+

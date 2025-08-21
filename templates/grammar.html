@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grammar & Spell Checker - Toolflock</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="/static/styles.css">
+    <style>
+        .tool-header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+        
+        .tool-header h1 {
+            font-size: 36px;
+            margin: 8px 0;
+            background: linear-gradient(90deg, var(--accent), var(--neon), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            background-size: 200% 100%;
+            animation: shine 6s linear infinite;
+        }
+        
+        .tool-header p {
+            margin: 0;
+            color: var(--muted);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .input-group {
+            margin-bottom: 24px;
+        }
+        
+        .input-group label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            color: var(--muted);
+            margin-bottom: 12px;
+        }
+        
+        .form-textarea {
+            width: 100%;
+            min-height: 200px;
+            padding: 12px;
+            resize: vertical;
+        }
+        
+        .check-btn {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .results-section {
+            margin-top: 32px;
+        }
+        
+        .results-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .error-item {
+            margin-bottom: 16px;
+            padding: 14px;
+            border-radius: 12px;
+            background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+        
+        .error-word {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+        
+        .suggestions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        
+        .suggestion-chip {
+            display: inline-block;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.12);
+            padding: 6px 10px;
+            border-radius: 999px;
+            font-size: 12px;
+            color: var(--text);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .suggestion-chip:hover {
+            background: linear-gradient(135deg, var(--accent), var(--accent-2));
+            color: white;
+            transform: scale(1.05);
+        }
+        
+        .no-errors {
+            padding: 12px 14px;
+            border-radius: 10px;
+            background: rgba(0, 200, 81, 0.1);
+            border: 1px solid rgba(0, 200, 81, 0.35);
+            color: #00c851;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .error {
+            padding: 12px 14px;
+            border-radius: 10px;
+            background: rgba(255, 107, 107, 0.1);
+            border: 1px solid rgba(255, 107, 107, 0.35);
+            color: #ffdede;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        @media (max-width: 768px) {
+            .tool-header h1 {
+                font-size: 28px;
+            }
+            
+            .form-textarea {
+                min-height: 150px;
+            }
+        }
+    </style>
+</head>
+<body>
+    {% include 'header.html' %}
+    
+    <div class="container">
+        <div class="tool-header">
+            <h1>Grammar & Spell Checker</h1>
+            <p>Enhance your writing with intelligent grammar and spelling suggestions</p>
+        </div>
+        
+        <div class="card grammar-card">
+            <div class="input-group">
+                <label>
+                    <i class='bx bx-text'></i>
+                    Enter Your Text
+                </label>
+                <textarea 
+                    id="textInput" 
+                    class="form-textarea" 
+                    placeholder="Type or paste your text here to check for grammar and spelling errors..."
+                ></textarea>
+            </div>
+            
+            <button type="button" class="btn check-btn" id="checkBtn">
+                <i class='bx bx-check-double'></i>
+                Check Grammar & Spelling
+            </button>
+            
+            <div class="results-section" id="resultsSection">
+                <div class="results-header">
+                    <i class='bx bx-list-check'></i>
+                    <h3>Analysis Results</h3>
+                </div>
+                <div id="resultsContent"></div>
+                
+                <div class="result-grid" id="statsSection">
+                    <div class="result-item">
+                        <div class="label">Words</div>
+                        <div class="value" id="wordCount">0</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="label">Characters</div>
+                        <div class="value" id="charCount">0</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="label">Issues Found</div>
+                        <div class="value" id="errorCount">0</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+        
+    <script src="/static/profile-drawer.js"></script>
+    <script>
+        // Grammar check functionality
+        const textInput = document.getElementById('textInput');
+        const checkBtn = document.getElementById('checkBtn');
+        const resultsSection = document.getElementById('resultsSection');
+        const resultsContent = document.getElementById('resultsContent');
+        const wordCount = document.getElementById('wordCount');
+        const charCount = document.getElementById('charCount');
+        const errorCount = document.getElementById('errorCount');
+        
+        function updateStats() {
+            const text = textInput.value;
+            const words = text.trim() ? text.trim().split(/\s+/).filter(w => w.length > 0).length : 0;
+            wordCount.textContent = words;
+            charCount.textContent = text.length;
+        }
+        
+        textInput.addEventListener('input', updateStats);
+        
+        checkBtn.addEventListener('click', async () => {
+            const text = textInput.value.trim();
+            
+            if (!text) {
+                // Create a temporary error message
+                resultsContent.innerHTML = `
+                    <div class="no-errors">
+                        <i class='bx bx-error'></i>
+                        <span>Please enter some text to check</span>
+                    </div>
+                `;
+                resultsSection.classList.add('show');
+                
+                // Remove error message after 3 seconds
+                setTimeout(() => {
+                    resultsSection.classList.remove('show');
+                }, 3000);
+                
+                return;
+            }
+            
+            const originalContent = checkBtn.innerHTML;
+            checkBtn.disabled = true;
+            checkBtn.innerHTML = '<i class="bx bx-loader-alt bx-spin"></i> Checking...';
+            
+            try {
+                const response = await fetch('/api/grammar', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text })
+                });
+                
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(data.error || 'Error checking grammar');
+                }
+                
+                resultsSection.classList.add('show');
+                
+                if (data.errors && data.errors.length > 0) {
+                    errorCount.textContent = data.errors.length;
+                    
+                    resultsContent.innerHTML = data.errors.map(error => `
+                        <div class="error-item">
+                            <div class="error-word">
+                                <i class='bx bx-error'></i> ${error.word}
+                            </div>
+                            <div style="color: var(--muted); font-size: 14px;">Suggestions:</div>
+                            <div class="suggestions">
+                                ${error.suggestions.map(s => `
+                                    <span class="suggestion-chip" onclick="replaceWord('${error.word}', '${s}')">${s}</span>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    errorCount.textContent = '0';
+                    resultsContent.innerHTML = `
+                        <div class="no-errors">
+                            <i class='bx bx-check-circle'></i>
+                            <span>Great! No grammar or spelling issues found.</span>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                // Show error in results section instead of alert
+                resultsSection.classList.add('show');
+                resultsContent.innerHTML = `
+                    <div class="error">
+                        <i class='bx bx-error'></i>
+                        <span>Error: ${error.message}</span>
+                    </div>
+                `;
+            } finally {
+                checkBtn.disabled = false;
+                checkBtn.innerHTML = originalContent;
+            }
+        });
+        
+        function replaceWord(oldWord, newWord) {
+            const text = textInput.value;
+            const regex = new RegExp(`\b${oldWord}\b`, 'gi');
+            textInput.value = text.replace(regex, newWord);
+            updateStats();
+        }
+    </script>
+    
+    <!-- Footer -->
+    <footer class="modern-footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <h3>Toolflock</h3>
+                <p>Empowering creativity with premium digital tools. Built with passion for developers, designers, and creators worldwide.</p>
+            </div>
+            <div class="footer-links">
+                <div class="footer-column">
+                    <h4>Tools</h4>
+                    <a href="/pdf">PDF Tools</a>
+                    <a href="/file-converter">File Converter</a>
+                    <a href="/shortener">URL Shortener</a>
+                    <a href="/qr">QR Generator</a>
+                </div>
+                <div class="footer-column">
+                    <h4>Company</h4>
+                    <a href="/about">About Us</a>
+                    <a href="/contact">Contact</a>
+                    <a href="/privacy">Privacy Policy</a>
+                    <a href="/terms">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2025 Toolflock by Erekan. Crafted with ❤️ for the global community.</p>
+            <div class="footer-tagline">
+                <span>✨ Where Innovation Meets Utility ✨</span>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

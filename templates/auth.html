@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Authentication - Toolflock</title>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/auth-styles.css">
+    <style>
+      :root {
+        --primary-color: #7a5cff;
+        --secondary-color: #4cd1ff;
+        --black: #000000;
+        --white: #ffffff;
+        --gray: #efefef;
+        --gray-2: #757575;
+        --card: rgba(10, 14, 32, 0.85);
+        --text: #ffffff;
+        --muted: rgba(255, 255, 255, 0.7);
+        --accent: #7a5cff;
+        --accent-2: #4cd1ff;
+        --neon: #00f7ff;
+      }
+
+      * {
+        font-family: 'Inter', sans-serif;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        height: 100vh;
+        overflow: hidden;
+      }
+
+      body {
+        background: linear-gradient(135deg, #0a0e20, #1a1f35);
+        color: var(--text);
+      }
+
+      .container {
+        position: relative;
+        min-height: 100vh;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .auth-card {
+        background: var(--card);
+        border-radius: 20px;
+        padding: 2rem;
+        width: 90%;
+        max-width: 500px;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        position: relative;
+        z-index: 10;
+        transform: scale(0);
+        transition: transform 0.5s ease-in-out;
+      }
+
+      .container.sign-in .auth-card.sign-in,
+      .container.sign-up .auth-card.sign-up {
+        transform: scale(1);
+      }
+
+      .auth-card h2 {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        background: linear-gradient(135deg, var(--accent), var(--neon));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .input-group {
+        position: relative;
+        width: 100%;
+        margin: 1.5rem 0;
+      }
+
+      .input-group i {
+        position: absolute;
+        top: 50%;
+        left: 1rem;
+        transform: translateY(-50%);
+        font-size: 1.2rem;
+        color: var(--gray-2);
+      }
+
+      .input-group input {
+        width: 100%;
+        padding: 1rem 1rem 1rem 3rem;
+        font-size: 1rem;
+        background-color: rgba(255, 255, 255, 0.08);
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        outline: none;
+        color: var(--text);
+        transition: all 0.3s ease;
+      }
+
+      .input-group input:focus {
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px rgba(122, 92, 255, 0.2);
+      }
+
+      .auth-card button {
+        cursor: pointer;
+        width: 100%;
+        padding: 1rem;
+        border-radius: 12px;
+        border: none;
+        background: linear-gradient(135deg, var(--accent), var(--accent-2));
+        color: var(--white);
+        font-size: 1.1rem;
+        font-weight: 600;
+        outline: none;
+        transition: all 0.3s ease;
+        margin-top: 1rem;
+      }
+
+      .auth-card button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(122, 92, 255, 0.3);
+      }
+
+      .auth-card p {
+        margin: 1.5rem 0;
+        font-size: 0.9rem;
+        color: var(--muted);
+      }
+
+      .auth-card p span {
+        color: var(--text);
+      }
+
+      .pointer {
+        cursor: pointer;
+        color: var(--accent);
+        font-weight: 600;
+      }
+
+      .pointer:hover {
+        text-decoration: underline;
+      }
+
+      /* BACK BUTTON */
+      .back-button-container {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        z-index: 1000;
+      }
+
+      .back-button {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(255, 255, 255, 0.1);
+        color: var(--text);
+        padding: 10px 20px;
+        border-radius: 12px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      .back-button:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+      }
+
+      .back-button i {
+        font-size: 18px;
+      }
+
+      /* RESPONSIVE */
+      @media only screen and (max-width: 425px) {
+        .container::before,
+        .container.sign-in::before,
+        .container.sign-up::before {
+          height: 100vh;
+          border-bottom-right-radius: 0;
+          border-top-left-radius: 0;
+          z-index: 0;
+          transform: none;
+          right: 0;
+        }
+
+        .auth-card {
+          width: 95%;
+          padding: 1.5rem;
+          border-radius: 16px;
+        }
+
+        .auth-card h2 {
+          font-size: 1.7rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="container" class="container tech-bg">
+      <!-- BACK BUTTON -->
+      <div class="back-button-container">
+        <a href="/" class="back-button">
+          <i class='bx bx-arrow-back'></i>
+          Back to Home
+        </a>
+      </div>
+
+      <!-- SIGN UP CARD -->
+      <div class="auth-card sign-up">
+        <h2>Create Account</h2>
+        <form id="signupForm">
+          <div class="input-group">
+            <i class='bx bxs-user'></i>
+            <input type="text" name="name" placeholder="Username" required>
+          </div>
+          <div class="input-group">
+            <i class='bx bx-mail-send'></i>
+            <input type="email" name="email" placeholder="Email" required>
+          </div>
+          <div class="input-group">
+            <i class='bx bxs-lock-alt'></i>
+            <input type="password" name="password" placeholder="Password" required>
+          </div>
+          <div class="input-group">
+            <i class='bx bxs-lock-alt'></i>
+            <input type="password" name="confirm_password" placeholder="Confirm password" required>
+          </div>
+          <button type="submit" id="signupBtn">
+            <span class="btn-text">Sign up</span>
+            <span class="btn-loading" style="display: none;">
+              <i class='bx bx-loader-alt bx-spin'></i>
+              Creating account...
+            </span>
+          </button>
+        </form>
+        <p>
+          <span>Already have an account? </span>
+          <b onclick="toggle()" class="pointer">Sign in here</b>
+        </p>
+      </div>
+
+      <!-- SIGN IN CARD -->
+      <div class="auth-card sign-in">
+        <h2>Welcome Back</h2>
+        <form id="signinForm">
+          <div class="input-group">
+            <i class='bx bxs-user'></i>
+            <input type="text" name="email" placeholder="Email" required>
+          </div>
+          <div class="input-group">
+            <i class='bx bxs-lock-alt'></i>
+            <input type="password" name="password" placeholder="Password" required>
+          </div>
+          <button type="submit" id="signinBtn">
+            <span class="btn-text">Sign in</span>
+            <span class="btn-loading" style="display: none;">
+              <i class='bx bx-loader-alt bx-spin'></i>
+              Signing in...
+            </span>
+          </button>
+        </form>
+        <p>
+          <b id="forgotPasswordLink" class="pointer">Forgot password?</b>
+        </p>
+        <p>
+          <span>Don't have an account? </span>
+          <b onclick="toggle()" class="pointer">Sign up here</b>
+        </p>
+      </div>
+    </div>
+
+    <script>
+      let container = document.getElementById('container')
+
+      toggle = () => {
+        container.classList.toggle('sign-in')
+        container.classList.toggle('sign-up')
+      }
+
+      setTimeout(() => {
+        container.classList.add('sign-in')
+      }, 200)
+
+      // Forgot password functionality
+      document.getElementById('forgotPasswordLink').addEventListener('click', () => {
+        window.location.href = '/forgot-password';
+      });
+
+      // Sign up form submission
+      document.getElementById('signupForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        const data = Object.fromEntries(formData);
+        const signupBtn = document.getElementById('signupBtn');
+
+        // Basic validation
+        if (data.password !== data.confirm_password) {
+          alert('Passwords do not match!');
+          return;
+        }
+
+        // Show loading state
+        signupBtn.disabled = true;
+        signupBtn.querySelector('.btn-text').style.display = 'none';
+        signupBtn.querySelector('.btn-loading').style.display = 'inline-flex';
+
+        try {
+          const response = await fetch('/signup', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+          });
+
+          const result = await response.json();
+          
+          if (result.success) {
+            alert('Account created successfully! Please check your email for a verification link.');
+            // Redirect to verification instructions + resend page
+            window.location.href = '/verify?email=' + encodeURIComponent(data.email);
+          } else {
+            alert(result.error || 'Failed to create account');
+          }
+        } catch (error) {
+          alert('An error occurred. Please try again.');
+          console.error('Error:', error);
+        } finally {
+          // Hide loading state
+          signupBtn.disabled = false;
+          signupBtn.querySelector('.btn-text').style.display = 'inline';
+          signupBtn.querySelector('.btn-loading').style.display = 'none';
+        }
+      });
+
+      // Sign in form submission
+      document.getElementById('signinForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        const data = Object.fromEntries(formData);
+        const signinBtn = document.getElementById('signinBtn');
+
+        // Show loading state
+        signinBtn.disabled = true;
+        signinBtn.querySelector('.btn-text').style.display = 'none';
+        signinBtn.querySelector('.btn-loading').style.display = 'inline-flex';
+
+        try {
+          const response = await fetch('/signin', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+          });
+
+          const result = await response.json();
+          
+          if (result.success) {
+            window.location.href = result.redirect || '/';
+          } else {
+            alert(result.error || 'Failed to sign in');
+          }
+        } catch (error) {
+          alert('An error occurred. Please try again.');
+          console.error('Error:', error);
+        } finally {
+          // Hide loading state
+          signinBtn.disabled = false;
+          signinBtn.querySelector('.btn-text').style.display = 'inline';
+          signinBtn.querySelector('.btn-loading').style.display = 'none';
+        }
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Processor - Toolflock</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/styles.css">
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <style>
+        .image-tools-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        .tool-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        
+        .tool-header h1 {
+            margin: 0 0 16px 0;
+            font-size: 42px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent), var(--neon));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: shine 6s linear infinite;
+        }
+        
+        .tool-header p {
+            font-size: 18px;
+            color: var(--muted);
+            margin: 0;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .processor-card {
+            background: var(--card);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 20px;
+            padding: 40px;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        
+        .processor-card::before {
+            content: "";
+            position: absolute;
+            inset: -1px;
+            border-radius: 20px;
+            padding: 1px;
+            background: linear-gradient(135deg, rgba(122,92,255,.3), rgba(76,209,255,.2), rgba(122,92,255,.3));
+            -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+            -webkit-mask-composite: xor;
+            mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+            mask-composite: exclude;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        
+        .processor-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        .processor-card:hover::before {
+            opacity: 1;
+        }
+        
+        .file-upload-zone {
+            border: 2px dashed rgba(122,92,255,0.3);
+            border-radius: 16px;
+            padding: 40px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: rgba(122,92,255,0.02);
+            position: relative;
+            margin-bottom: 32px;
+        }
+        
+        .file-upload-zone:hover {
+            border-color: rgba(122,92,255,0.5);
+            background: rgba(122,92,255,0.05);
+            transform: translateY(-2px);
+        }
+        
+        .file-upload-zone.active {
+            border-color: var(--accent);
+            background: rgba(122,92,255,0.1);
+            transform: scale(1.02);
+        }
+        
+        .file-upload-zone input[type="file"] {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+        
+        .upload-icon {
+            font-size: 48px;
+            color: var(--accent);
+            margin-bottom: 16px;
+            display: block;
+        }
+        
+        .upload-text {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+        
+        .upload-hint {
+            font-size: 14px;
+            color: var(--muted);
+        }
+        
+        .files-preview {
+            display: none;
+            background: rgba(76,209,255,0.05);
+            border: 1px solid rgba(76,209,255,0.2);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 32px;
+        }
+        
+        .files-preview.active {
+            display: block;
+        }
+        
+        .file-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 12px;
+            margin-top: 16px;
+        }
+        
+        .file-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 10px;
+            color: var(--text);
+            font-size: 14px;
+        }
+        
+        .settings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+        
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .input-group label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            color: var(--muted);
+            font-size: 15px;
+        }
+        
+        .input-group label i {
+            color: var(--accent);
+            font-size: 18px;
+        }
+        
+        .input-group input,
+        .input-group select {
+            height: 48px;
+            padding: 0 16px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.14);
+            background: rgba(5,8,22,0.4);
+            color: var(--text);
+            outline: none;
+            transition: all 0.3s ease;
+            font-size: 15px;
+        }
+        
+        .input-group input:focus,
+        .input-group select:focus {
+            border-color: rgba(124,100,255,.7);
+            box-shadow: 0 0 0 4px rgba(124,100,255,.12), 0 0 0 1px rgba(124,100,255,.3) inset;
+        }
+        
+        .process-btn {
+            width: 100%;
+            height: 56px;
+            border: none;
+            border-radius: 16px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-2));
+            color: white;
+            font-weight: 700;
+            font-size: 18px;
+            letter-spacing: 0.3px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            box-shadow: 0 8px 24px rgba(122,92,255,.28);
+            transition: all 0.3s ease;
+        }
+        
+        .process-btn:hover {
+            filter: brightness(1.06);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(122,92,255,.34);
+        }
+        
+        .process-btn:active {
+            transform: translateY(0);
+        }
+        
+        .process-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        @media (max-width: 768px) {
+            .image-tools-container {
+                padding: 24px 16px;
+            }
+            
+            .processor-card {
+                padding: 24px;
+            }
+            
+            .file-upload-zone {
+                padding: 24px 16px;
+            }
+            
+            .settings-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    {% include 'header.html' %}
+    <div class="image-tools-container">
+      <div class="tool-header">
+        <h1>Image Processor</h1>
+        <p>Resize, compress, and convert multiple images at once with professional quality</p>
+      </div>
+      
+      <div class="processor-card">
+        <form id="img-bulk">
+          <div class="file-upload-zone" id="uploadZone">
+            <input type="file" name="files" accept="image/*" multiple required id="imageFiles" />
+            <i class='bx bx-cloud-upload upload-icon'></i>
+            <div class="upload-text">Drop images here or click to browse</div>
+            <div class="upload-hint">Supports: JPG, PNG, GIF, BMP, WEBP • Multiple files allowed</div>
+          </div>
+          
+          <div class="files-preview" id="filesPreview">
+            <div style="margin-bottom: 12px; color: var(--text); font-weight: 500;">
+              <i class='bx bx-images' style="color: var(--accent);"></i>
+              <span id="fileCount">0</span> images selected
+            </div>
+            <div class="file-list" id="fileList"></div>
+          </div>
+          
+          <div class="settings-grid">
+            <div class="input-group">
+              <label>
+                <i class='bx bx-expand-horizontal'></i>
+                Width (pixels)
+              </label>
+              <input type="number" name="width" placeholder="e.g. 1024" min="1" />
+            </div>
+            
+            <div class="input-group">
+              <label>
+                <i class='bx bx-expand-vertical'></i>
+                Height (pixels)
+              </label>
+              <input type="number" name="height" placeholder="e.g. 768" min="1" />
+            </div>
+            
+            <div class="input-group">
+              <label>
+                <i class='bx bx-slider'></i>
+                Quality (1-95)
+              </label>
+              <input type="number" name="quality" min="1" max="95" value="80" />
+            </div>
+            
+            <div class="input-group">
+              <label>
+                <i class='bx bx-image-alt'></i>
+                Output Format
+              </label>
+              <select name="format">
+                <option value="jpeg">JPEG - Best for photos</option>
+                <option value="png">PNG - Lossless quality</option>
+                <option value="webp">WEBP - Modern format</option>
+              </select>
+            </div>
+          </div>
+          
+          <button class="process-btn" type="submit">
+            <i class='bx bx-cog'></i>
+            Process Images
+          </button>
+        </form>
+      </div>
+    </div>
+    
+    <script src="/static/profile-drawer.js"></script>
+    <script>
+      // Theme toggle
+      const themeToggle = document.getElementById('themeToggle');
+      const body = document.body;
+      
+      const savedTheme = localStorage.getItem('toolflock-theme') || 'dark';
+      if (savedTheme === 'light') {
+        body.classList.add('light-theme');
+        themeToggle.textContent = '☀️';
+      }
+      
+      if (themeToggle) {
+        themeToggle.addEventListener('click', () => {
+          body.classList.toggle('light-theme');
+          const isLight = body.classList.contains('light-theme');
+          themeToggle.textContent = isLight ? '☀️' : '🌙';
+          localStorage.setItem('toolflock-theme', isLight ? 'light' : 'dark');
+        });
+      }
+      
+      // Profile dropdown
+      const profileBtn = document.getElementById('profileBtn');
+      const profileDropdown = document.getElementById('profileDropdown');
+      
+      if (profileBtn && profileDropdown) {
+        profileBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          profileDropdown.style.display = profileDropdown.style.display === 'block' ? 'none' : 'block';
+        });
+        
+        document.addEventListener('click', () => {
+          profileDropdown.style.display = 'none';
+        });
+      }
+      
+      // File upload handling
+      const imageFiles = document.getElementById('imageFiles');
+      const uploadZone = document.getElementById('uploadZone');
+      const filesPreview = document.getElementById('filesPreview');
+      const fileList = document.getElementById('fileList');
+      const fileCount = document.getElementById('fileCount');
+      
+      imageFiles.addEventListener('change', (e) => {
+        if (e.target.files && e.target.files.length > 0) {
+          updateFilePreview(e.target.files);
+        }
+      });
+      
+      function updateFilePreview(files) {
+        uploadZone.classList.add('active');
+        filesPreview.classList.add('active');
+        fileCount.textContent = files.length;
+        
+        fileList.innerHTML = '';
+        Array.from(files).forEach(file => {
+          const fileItem = document.createElement('div');
+          fileItem.className = 'file-item';
+          fileItem.innerHTML = `
+            <i class='bx bx-image' style="color: var(--accent);"></i>
+            <span>${file.name}</span>
+          `;
+          fileList.appendChild(fileItem);
+        });
+      }
+      
+      // Drag and drop
+      uploadZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        uploadZone.classList.add('active');
+      });
+      
+      uploadZone.addEventListener('dragleave', () => {
+        uploadZone.classList.remove('active');
+      });
+      
+      uploadZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+          imageFiles.files = e.dataTransfer.files;
+          updateFilePreview(e.dataTransfer.files);
+        }
+      });
+      
+      // Form submission
+      document.getElementById('img-bulk').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const submitBtn = e.target.querySelector('button[type="submit"]');
+        
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="bx bx-loader-alt bx-spin"></i> Processing...';
+        
+        try {
+          const fd = new FormData(e.target);
+          const res = await fetch('/api/image/bulk', { method: 'POST', body: fd });
+          
+          if (!res.ok) {
+            const error = await res.json();
+            throw new Error(error.error || 'Processing failed');
+          }
+          
+          const blob = await res.blob();
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'images_processed.zip';
+          a.click();
+          URL.revokeObjectURL(url);
+          
+          // Reset form
+          setTimeout(() => {
+            e.target.reset();
+            uploadZone.classList.remove('active');
+            filesPreview.classList.remove('active');
+            fileList.innerHTML = '';
+            fileCount.textContent = '0';
+          }, 1000);
+        } catch (error) {
+          alert(error.message);
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = '<i class="bx bx-cog"></i> Process Images';
+        }
+      });
+    </script>
+    
+    <!-- Footer -->
+    <footer class="modern-footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <h3>Toolflock</h3>
+                <p>Empowering creativity with premium digital tools. Built with passion for developers, designers, and creators worldwide.</p>
+            </div>
+            <div class="footer-links">
+                <div class="footer-column">
+                    <h4>Tools</h4>
+                    <a href="/pdf">PDF Tools</a>
+                    <a href="/file-converter">File Converter</a>
+                    <a href="/shortener">URL Shortener</a>
+                    <a href="/qr">QR Generator</a>
+                </div>
+                <div class="footer-column">
+                    <h4>Company</h4>
+                    <a href="/about">About Us</a>
+                    <a href="/contact">Contact</a>
+                    <a href="/privacy">Privacy Policy</a>
+                    <a href="/terms">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2025 Toolflock by Erekan. Crafted with ❤️ for the global community.</p>
+            <div class="footer-tagline">
+                <span>✨ Where Innovation Meets Utility ✨</span>
+            </div>
+        </div>
+    </footer>
+  </body>
+  </html>
+
+

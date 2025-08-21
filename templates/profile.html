@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - Toolflock</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+</head>
+<body>
+    {% include 'header.html' %}
+    
+    <div class="container profile-container">
+        <div class="profile-card card">
+            <div class="profile-header">
+                <div class="profile-avatar">
+                    <div class="avatar-initial">{{ user.name[0].upper() }}</div>
+                </div>
+                <div class="profile-info">
+                    <h1 class="profile-name">{{ user.name }}</h1>
+                    <p class="profile-email">{{ user.email }}</p>
+                    {% if user.is_verified %}
+                        <span class="profile-badge verified">
+                            ✓ Verified Account
+                        </span>
+                    {% else %}
+                        <span class="profile-badge unverified">
+                            ! Unverified Account
+                        </span>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="profile-sections">
+                <!-- Personal Information Section -->
+                <div class="profile-section card">
+                    <div class="section-header">
+                        <div class="section-icon">👤</div>
+                        <h2 class="section-title">Personal Information</h2>
+                    </div>
+                    <div id="profileMessage" class="message-container"></div>
+                    <form id="profileForm" class="profile-form">
+                        <div class="form-group">
+                            <label class="form-label" for="name">Full Name</label>
+                            <input type="text" id="name" name="name" class="form-input" value="{{ user.name }}" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="email">Email Address</label>
+                            <input type="email" id="email" class="form-input" value="{{ user.email }}" disabled>
+                            
+                        </div>
+                        <button type="submit" class="btn btn-primary">Update Profile</button>
+                    </form>
+                </div>
+                
+                <!-- Security Section -->
+                <div class="profile-section card">
+                    <div class="section-header">
+                        <div class="section-icon">🔒</div>
+                        <h2 class="section-title">Security</h2>
+                    </div>
+                    <div id="passwordMessage" class="message-container"></div>
+                    <form id="passwordForm" class="profile-form">
+                        <div class="form-group">
+                            <label class="form-label" for="currentPassword">Current Password</label>
+                            <input type="password" id="currentPassword" name="current_password" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="newPassword">New Password</label>
+                            <input type="password" id="newPassword" name="new_password" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="confirmPassword">Confirm New Password</label>
+                            <input type="password" id="confirmPassword" name="confirm_password" class="form-input" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Change Password</button>
+                    </form>
+                </div>
+                
+                <!-- Preferences Section -->
+                <div class="profile-section card">
+                    <div class="section-header">
+                        <div class="section-icon">⚙️</div>
+                        <h2 class="section-title">Preferences</h2>
+                    </div>
+                    <div class="settings-grid">
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <h4>Dark Mode</h4>
+                                <p>Choose your preferred color scheme</p>
+                            </div>
+                            <div class="toggle-switch" id="themeToggleSwitch"></div>
+                        </div>
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <h4>Email Notifications</h4>
+                                <p>Receive updates about new features</p>
+                            </div>
+                            <div class="toggle-switch active" id="notificationsToggle"></div>
+                        </div>
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <h4>Analytics</h4>
+                                <p>Help us improve by sharing usage data</p>
+                            </div>
+                            <div class="toggle-switch active" id="analyticsToggle"></div>
+                        </div>
+                    </div>
+                    <div class="account-actions">
+                        <div class="account-info">
+                            <p>Member since {{ user.created_at.strftime('%B %Y') }}</p>
+                        </div>
+                        <button class="btn btn-danger" onclick="confirmSignOut()">
+                            Sign Out
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Theme functionality (synced with backend preferences)
+        const themeToggle = document.getElementById('themeToggle');
+        const themeToggleSwitch = document.getElementById('themeToggleSwitch');
+        const body = document.body;
+        
+        async function applyThemeFromServer() {
+            try {
+                const res = await fetch('/profile/preferences');
+                const pref = await res.json();
+                const serverTheme = pref?.preferences?.theme || 'dark';
+                const isLight = serverTheme === 'light';
+                body.classList.toggle('light-theme', isLight);
+                themeToggleSwitch.classList.toggle('active', !isLight);
+                const headerThemeToggle = document.getElementById('themeToggle');
+                if (headerThemeToggle) headerThemeToggle.textContent = isLight ? '☀️' : '🌙';
+                localStorage.setItem('toolflock-theme', isLight ? 'light' : 'dark');
+            } catch {}
+        }
+        
+        function toggleTheme() {
+            const isLight = !body.classList.contains('light-theme');
+            body.classList.toggle('light-theme', isLight);
+            themeToggleSwitch.classList.toggle('active', !isLight);
+            const headerThemeToggle = document.getElementById('themeToggle');
+            if (headerThemeToggle) headerThemeToggle.textContent = isLight ? '☀️' : '🌙';
+            localStorage.setItem('toolflock-theme', isLight ? 'light' : 'dark');
+            // Persist to server
+            fetch('/profile/preferences', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ theme: isLight ? 'light' : 'dark' })
+            }).catch(()=>{});
+        }
+        
+        themeToggle?.addEventListener('click', toggleTheme);
+        themeToggleSwitch?.addEventListener('click', toggleTheme);
+        applyThemeFromServer();
+        
+        // Profile dropdown
+        const profileBtn = document.getElementById('profileBtn');
+        const profileDropdown = document.getElementById('profileDropdown');
+        
+        profileBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            profileDropdown.style.display = profileDropdown.style.display === 'block' ? 'none' : 'block';
+        });
+        
+        document.addEventListener('click', () => {
+            profileDropdown.style.display = 'none';
+        });
+        
+        // Profile form
+        document.getElementById('profileForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData);
+            
+            try {
+                const response = await fetch('/profile/update', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showMessage('profileMessage', 'Profile updated successfully!', 'success');
+                } else {
+                    showMessage('profileMessage', result.error || 'Failed to update profile', 'error');
+                }
+            } catch (error) {
+                showMessage('profileMessage', 'Network error occurred', 'error');
+            }
+        });
+        
+        // Password form
+        document.getElementById('passwordForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData);
+            
+            if (data.new_password !== data.confirm_password) {
+                showMessage('passwordMessage', 'New passwords do not match', 'error');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/profile/change-password', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showMessage('passwordMessage', 'Password changed successfully!', 'success');
+                    e.target.reset();
+                } else {
+                    showMessage('passwordMessage', result.error || 'Failed to change password', 'error');
+                }
+            } catch (error) {
+                showMessage('passwordMessage', 'Network error occurred', 'error');
+            }
+        });
+        
+        // Load and wire preferences
+        async function loadPreferences() {
+            try {
+                const res = await fetch('/profile/preferences');
+                const data = await res.json();
+                const prefs = data.preferences || {};
+                document.getElementById('notificationsToggle').classList.toggle('active', !!prefs.notifications);
+                document.getElementById('analyticsToggle').classList.toggle('active', !!prefs.analytics);
+            } catch {}
+        }
+
+        function savePreference(key, value) {
+            fetch('/profile/preferences', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ [key]: value })
+            }).catch(()=>{});
+        }
+
+        document.getElementById('notificationsToggle').addEventListener('click', function() {
+            this.classList.toggle('active');
+            const enabled = this.classList.contains('active');
+            savePreference('notifications', enabled);
+        });
+        
+        document.getElementById('analyticsToggle').addEventListener('click', function() {
+            this.classList.toggle('active');
+            const enabled = this.classList.contains('active');
+            savePreference('analytics', enabled);
+        });
+        
+        loadPreferences();
+        
+        function showMessage(containerId, message, type) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = `<div class="${type}-message">${message}</div>`;
+            setTimeout(() => {
+                container.innerHTML = '';
+            }, 5000);
+        }
+        
+        function confirmSignOut() {
+            if (confirm('Are you sure you want to sign out?')) {
+                window.location.href = '/signout';
+            }
+        }
+    </script>
+    
+    <!-- Footer -->
+    <footer class="modern-footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <h3>Toolflock</h3>
+                <p>Empowering creativity with premium digital tools. Built with passion for developers, designers, and creators worldwide.</p>
+            </div>
+            <div class="footer-links">
+                <div class="footer-column">
+                    <h4>Tools</h4>
+                    <a href="/pdf">PDF Tools</a>
+                    <a href="/file-converter">File Converter</a>
+                    <a href="/shortener">URL Shortener</a>
+                    <a href="/qr">QR Generator</a>
+                </div>
+                <div class="footer-column">
+                    <h4>Company</h4>
+                    <a href="/about">About Us</a>
+                    <a href="/contact">Contact</a>
+                    <a href="/privacy">Privacy Policy</a>
+                    <a href="/terms">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2025 Toolflock by Erekan. Crafted with ❤️ for the global community.</p>
+            <div class="footer-tagline">
+                <span>✨ Where Innovation Meets Utility ✨</span>
+            </div>
+        </div>
+    </footer>
+    <script src="/static/profile-drawer.js"></script>
+</body>
+</html>

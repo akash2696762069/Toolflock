@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>QR Tools - Toolflock</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="/static/styles.css" />
+    <style>
+      .tool-container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 32px 20px;
+      }
+      
+      .tool-header {
+        text-align: center;
+        margin-bottom: 48px;
+      }
+      
+      .tool-header h1 {
+        font-size: 36px;
+        font-weight: 700;
+        margin: 0 0 12px 0;
+        background: linear-gradient(135deg, var(--accent), var(--neon));
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+      
+      .qr-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+      }
+      
+      .qr-card {
+        background: var(--card);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 20px;
+        padding: 32px;
+        position: relative;
+        overflow: hidden;
+      }
+      
+      .qr-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--accent), var(--neon));
+      }
+      
+      .card-title {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 24px;
+        font-size: 20px;
+        font-weight: 600;
+        color: var(--text);
+      }
+      
+      .card-title i {
+        font-size: 28px;
+        color: var(--accent);
+      }
+      
+      .input-group {
+        margin-bottom: 20px;
+      }
+      
+      .input-group label {
+        display: block;
+        margin-bottom: 8px;
+        color: var(--text);
+        font-weight: 500;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      
+      .input-group label i {
+        color: var(--accent);
+        font-size: 18px;
+      }
+      
+      .input-group input,
+      .input-group textarea {
+        width: 100%;
+        padding: 12px 16px;
+        border: 2px solid rgba(255,255,255,0.1);
+        border-radius: 12px;
+        background: rgba(10, 14, 32, 0.4);
+        color: var(--text);
+        font-size: 15px;
+        transition: all 0.3s ease;
+        font-family: 'Inter', sans-serif;
+      }
+      
+      .input-group input:focus,
+      .input-group textarea:focus {
+        outline: none;
+        border-color: var(--accent);
+        box-shadow: 0 0 0 4px rgba(122,92,255,0.1);
+      }
+      
+      .input-group textarea {
+        resize: vertical;
+        min-height: 100px;
+      }
+      
+      .action-btn {
+        width: 100%;
+        padding: 14px 24px;
+        background: linear-gradient(135deg, var(--accent), var(--accent-2));
+        color: white;
+        border: none;
+        border-radius: 12px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+      }
+      
+      .action-btn:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 30px rgba(122,92,255,0.3);
+      }
+      
+      .action-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+      
+      .secondary-btn {
+        background: rgba(255,255,255,0.1);
+        border: 2px solid rgba(255,255,255,0.2);
+      }
+      
+      .secondary-btn:hover:not(:disabled) {
+        background: rgba(255,255,255,0.15);
+        border-color: var(--accent);
+      }
+      
+      .qr-result {
+        margin-top: 24px;
+        padding: 24px;
+        background: rgba(10, 14, 32, 0.5);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 12px;
+        text-align: center;
+        display: none;
+      }
+      
+      .qr-result.active {
+        display: block;
+      }
+      
+      .qr-result img {
+        max-width: 100%;
+        border-radius: 8px;
+        background: white;
+        padding: 16px;
+      }
+      
+      .video-container {
+        position: relative;
+        width: 100%;
+        aspect-ratio: 4/3;
+        background: rgba(10, 14, 32, 0.5);
+        border-radius: 12px;
+        overflow: hidden;
+        margin-bottom: 20px;
+      }
+      
+      .video-container video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      
+      .scan-overlay {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 200px;
+        height: 200px;
+        border: 3px solid var(--accent);
+        border-radius: 16px;
+        animation: pulse 2s infinite;
+      }
+      
+      @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.5; }
+      }
+      
+      .scan-result {
+        padding: 16px;
+        background: rgba(76,209,255,0.1);
+        border: 1px solid rgba(76,209,255,0.2);
+        border-radius: 12px;
+        margin-top: 20px;
+        display: none;
+      }
+      
+      .scan-result.active {
+        display: block;
+      }
+      
+      .button-group {
+        display: flex;
+        gap: 12px;
+      }
+      
+      @media (max-width: 768px) {
+        .qr-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="navbar">
+      <div>
+        <a href="/" class="brand">Toolflock</a><span class="byline">by Erekan</span>
+      </div>
+      <div class="nav-links">
+        <a href="/">Home</a>
+        <a href="/all-tools">All Tools</a>
+        <button class="theme-toggle" id="themeToggle" title="Toggle theme">🌙</button>
+        {% if current_user.is_authenticated %}
+          <div class="profile-menu">
+            <button class="profile-btn" id="profileBtn">
+              <div class="profile-avatar">{{ current_user.name[0].upper() }}</div>
+            </button>
+            <div class="profile-dropdown" id="profileDropdown">
+              <a href="/profile">Profile</a>
+              <a href="/signout">Sign Out</a>
+            </div>
+          </div>
+        {% else %}
+          <a href="/signin" class="get-started-btn">Get Started</a>
+        {% endif %}
+      </div>
+    </div>
+    <div class="tool-container">
+      <div class="tool-header">
+        <h1>QR Code Tools</h1>
+        <p>Generate custom QR codes or scan existing ones with your camera</p>
+      </div>
+      
+      <div class="qr-grid">
+        <div class="qr-card">
+          <div class="card-title">
+            <i class='bx bx-qr'></i>
+            <span>Generate QR Code</span>
+          </div>
+          
+          <div class="input-group">
+            <label>
+              <i class='bx bx-text'></i>
+              Content
+            </label>
+            <textarea id="qr-text" placeholder="Enter text, URL, or any data you want to encode" required></textarea>
+          </div>
+          
+          <div class="input-group">
+            <label>
+              <i class='bx bx-expand'></i>
+              Size (pixels)
+            </label>
+            <input id="qr-size" type="number" value="256" min="100" max="1000" />
+          </div>
+          
+          <button class="action-btn" id="gen">
+            <i class='bx bx-qr-scan'></i>
+            Generate QR Code
+          </button>
+          
+          <div class="qr-result" id="qr-result">
+            <img id="qr-img" alt="Generated QR Code" />
+            <div style="margin-top: 16px;">
+              <button class="action-btn secondary-btn" id="download-qr">
+                <i class='bx bx-download'></i>
+                Download QR Code
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <div class="qr-card">
+          <div class="card-title">
+            <i class='bx bx-scan'></i>
+            <span>Scan QR Code</span>
+          </div>
+          
+          <div class="video-container">
+            <video id="video" autoplay playsinline muted></video>
+            <div class="scan-overlay" id="scanOverlay" style="display: none;"></div>
+          </div>
+          
+          <div class="button-group">
+            <button class="action-btn" id="start">
+              <i class='bx bx-camera'></i>
+              Start Camera
+            </button>
+            <button class="action-btn secondary-btn" id="stop">
+              <i class='bx bx-stop'></i>
+              Stop
+            </button>
+          </div>
+          
+          <div class="scan-result" id="scan-result">
+            <div style="color: var(--text); font-weight: 500; margin-bottom: 8px;">
+              <i class='bx bx-check-circle' style="color: var(--neon);"></i>
+              Scanned Result:
+            </div>
+            <div id="scan-text" style="word-break: break-all; color: var(--muted);"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <footer style="text-align: center; padding: 32px 20px; color: var(--muted); font-size: 14px;">
+      <p>© 2025 Toolflock by Erekan. All rights reserved.</p>
+      <p style="margin-top: 8px;">Built with passion to make your life easier ✨</p>
+    </footer>
+    <script src="/static/profile-drawer.js"></script>
+    <script>
+      // Theme toggle
+      const themeToggle = document.getElementById('themeToggle');
+      const body = document.body;
+      
+      const savedTheme = localStorage.getItem('toolflock-theme') || 'dark';
+      if (savedTheme === 'light') {
+        body.classList.add('light-theme');
+        themeToggle.textContent = '☀️';
+      }
+      
+      if (themeToggle) {
+        themeToggle.addEventListener('click', () => {
+          body.classList.toggle('light-theme');
+          const isLight = body.classList.contains('light-theme');
+          themeToggle.textContent = isLight ? '☀️' : '🌙';
+          localStorage.setItem('toolflock-theme', isLight ? 'light' : 'dark');
+        });
+      }
+      
+      // Profile dropdown
+      const profileBtn = document.getElementById('profileBtn');
+      const profileDropdown = document.getElementById('profileDropdown');
+      
+      if (profileBtn && profileDropdown) {
+        profileBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          profileDropdown.style.display = profileDropdown.style.display === 'block' ? 'none' : 'block';
+        });
+        
+        document.addEventListener('click', () => {
+          profileDropdown.style.display = 'none';
+        });
+      }
+      
+      // QR Generation
+      const genBtn = document.getElementById('gen');
+      const qrResult = document.getElementById('qr-result');
+      const qrImg = document.getElementById('qr-img');
+      
+      genBtn.onclick = async () => {
+        const text = document.getElementById('qr-text').value;
+        const size = document.getElementById('qr-size').value;
+        
+        if (!text) {
+          alert('Please enter some text or URL to encode');
+          return;
+        }
+        
+        genBtn.disabled = true;
+        genBtn.innerHTML = '<i class="bx bx-loader-alt bx-spin"></i> Generating...';
+        
+        try {
+          const res = await fetch('/api/qr/generate', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ text, size: parseInt(size) })
+          });
+          
+          const data = await res.json();
+          
+          if (!res.ok) {
+            throw new Error(data.error || 'Failed to generate QR code');
+          }
+          
+          qrImg.src = data.pngBase64;
+          qrResult.classList.add('active');
+        } catch (error) {
+          alert(error.message);
+        } finally {
+          genBtn.disabled = false;
+          genBtn.innerHTML = '<i class="bx bx-qr-scan"></i> Generate QR Code';
+        }
+      };
+      
+      // Download QR
+      const downloadBtn = document.getElementById('download-qr');
+      if (downloadBtn) {
+        downloadBtn.onclick = () => {
+          const img = document.getElementById('qr-img');
+          if (img.src) {
+            const a = document.createElement('a');
+            a.href = img.src;
+            a.download = 'qrcode.png';
+            a.click();
+          }
+        };
+      }
+      
+      // Camera scanning
+      let stream;
+      const video = document.getElementById('video');
+      const startBtn = document.getElementById('start');
+      const stopBtn = document.getElementById('stop');
+      const scanOverlay = document.getElementById('scanOverlay');
+      const scanResult = document.getElementById('scan-result');
+      
+      startBtn.onclick = async () => {
+        try {
+          stream = await navigator.mediaDevices.getUserMedia({
+            video: { facingMode: 'environment' }
+          });
+          video.srcObject = stream;
+          scanOverlay.style.display = 'block';
+          startBtn.disabled = true;
+          stopBtn.disabled = false;
+          
+          // Simulate scan success (in production, integrate jsQR or similar)
+          setTimeout(() => {
+            if (stream) {
+              scanResult.classList.add('active');
+              document.getElementById('scan-text').textContent = 'Camera preview active. Integrate jsQR library for actual scanning.';
+            }
+          }, 2000);
+        } catch(e) {
+          alert('Camera not available: ' + e.message);
+        }
+      };
+      
+      stopBtn.onclick = () => {
+        if (stream) {
+          stream.getTracks().forEach(track => track.stop());
+          video.srcObject = null;
+          scanOverlay.style.display = 'none';
+          startBtn.disabled = false;
+          stopBtn.disabled = true;
+          scanResult.classList.remove('active');
+        }
+      };
+      
+      // Initially disable stop button
+      stopBtn.disabled = true;
+    </script>
+    
+    <!-- Footer -->
+    <footer class="modern-footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <h3>Toolflock</h3>
+                <p>Empowering creativity with premium digital tools. Built with passion for developers, designers, and creators worldwide.</p>
+            </div>
+            <div class="footer-links">
+                <div class="footer-column">
+                    <h4>Tools</h4>
+                    <a href="/pdf">PDF Tools</a>
+                    <a href="/file-converter">File Converter</a>
+                    <a href="/shortener">URL Shortener</a>
+                    <a href="/qr">QR Generator</a>
+                </div>
+                <div class="footer-column">
+                    <h4>Company</h4>
+                    <a href="/about">About Us</a>
+                    <a href="/contact">Contact</a>
+                    <a href="/privacy">Privacy Policy</a>
+                    <a href="/terms">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2025 Toolflock by Erekan. Crafted with ❤️ for the global community.</p>
+            <div class="footer-tagline">
+                <span>✨ Where Innovation Meets Utility ✨</span>
+            </div>
+        </div>
+    </footer>
+  </body>
+  </html>
+
+

@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Utility Hub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/static/styles.css" />
+    <style>
+      .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; }
+      .tool-card { 
+        background: var(--card); 
+        border: 1px solid rgba(255,255,255,0.08); 
+        border-radius: 16px; 
+        padding: 24px; 
+        display:flex; 
+        flex-direction:column; 
+        gap: 14px; 
+        transition: all 0.3s ease;
+        min-height: 220px;
+      }
+      .tool-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 16px 40px rgba(0,0,0,.45);
+        border-color: rgba(122,92,255,.3);
+      }
+      .tool-card h3 { margin: 0; font-size: 18px; font-weight: 600; }
+      .tool-card p { margin: 0; color: var(--muted); line-height: 1.5; }
+      .tool-card .actions { display:flex; gap: 10px; margin-top:auto; }
+      .tool-card .icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, rgba(122,92,255,0.25), rgba(76,209,255,0.2));
+        border: 1px solid rgba(255,255,255,0.1);
+        font-size: 22px;
+        margin-bottom: 16px;
+      }
+      .tool-card a { text-decoration: none; }
+      .chip { display:inline-block; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); padding: 6px 10px; border-radius: 999px; font-size: 12px; color: var(--text); }
+      
+      /* Navbar styles */
+      .get-started-btn {
+        background: linear-gradient(135deg, var(--accent), var(--accent-2));
+        color: white;
+        padding: 8px 16px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+      }
+      .get-started-btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 8px 20px rgba(122,92,255,0.3);
+      }
+      
+      .theme-toggle {
+        background: rgba(255,255,255,0.1);
+        border: 1px solid rgba(255,255,255,0.2);
+        border-radius: 8px;
+        padding: 8px 12px;
+        color: var(--text);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 16px;
+      }
+      .theme-toggle:hover {
+        background: rgba(255,255,255,0.2);
+      }
+      
+      .profile-menu {
+        position: relative;
+      }
+      
+      .profile-btn {
+        background: linear-gradient(135deg, var(--accent), var(--accent-2));
+        border: none;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      
+      .profile-avatar {
+        color: white;
+        font-weight: 600;
+        font-size: 16px;
+      }
+      
+      .profile-dropdown {
+        position: absolute;
+        top: 100%;
+        right: 0;
+        margin-top: 8px;
+        background: rgba(10, 14, 32, 0.95);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 12px;
+        padding: 8px;
+        min-width: 120px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        backdrop-filter: blur(12px);
+        display: none;
+        z-index: 1000;
+      }
+      
+      .profile-dropdown a {
+        display: block;
+        padding: 8px 12px;
+        color: var(--text);
+        text-decoration: none;
+        border-radius: 6px;
+        transition: background 0.2s ease;
+      }
+      
+      .profile-dropdown a:hover {
+        background: rgba(255,255,255,0.1);
+      }
+      
+      /* Explore section */
+      .explore-section {
+        text-align: center;
+        margin: 40px 0;
+      }
+      
+      .explore-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: linear-gradient(135deg, var(--accent), var(--neon));
+        color: white;
+        padding: 14px 28px;
+        border-radius: 12px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 16px;
+        transition: all 0.3s ease;
+        box-shadow: 0 8px 25px rgba(122,92,255,0.25);
+      }
+      
+      .explore-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 35px rgba(122,92,255,0.35);
+      }
+      
+      .explore-arrow {
+        font-size: 18px;
+        animation: bounce 2s infinite;
+      }
+      
+      @keyframes bounce {
+        0%, 20%, 50%, 80%, 100% { transform: translateX(0); }
+        40% { transform: translateX(4px); }
+        60% { transform: translateX(2px); }
+      }
+      
+      @media (max-width: 900px) { .grid { grid-template-columns: 1fr 1fr; } }
+      @media (max-width: 640px) { .grid { grid-template-columns: 1fr; } }
+    </style>
+  </head>
+  <body>
+    <div class="navbar">
+      <div>
+        <a href="/" class="brand">Toolflock</a><span class="byline">by Erekan</span>
+      </div>
+      <div class="nav-links">
+        <a href="/">Home</a>
+        <a href="/all-tools">All Tools</a>
+        <button class="theme-toggle" id="themeToggle" title="Toggle theme">🌙</button>
+        {% if current_user.is_authenticated %}
+          <div class="profile-menu">
+            <button class="profile-btn" id="profileBtn" aria-label="Open profile" data-initial="{{ current_user.name[0].upper() }}">
+              <svg class="profile-icon-premium" width="26" height="26" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <defs>
+                  <linearGradient id="grad-prem" x1="0" y1="0" x2="24" y2="24" gradientUnits="userSpaceOnUse">
+                    <stop offset="0" stop-color="#7a5cff"/>
+                    <stop offset="1" stop-color="#4cd1ff"/>
+                  </linearGradient>
+                </defs>
+                <path d="M12 12c2.761 0 5-2.239 5-5S14.761 2 12 2 7 4.239 7 7s2.239 5 5 5Z" stroke="url(#grad-prem)" stroke-width="1.8"/>
+                <path d="M4 20.5c0-3.314 3.582-6 8-6s8 2.686 8 6" stroke="url(#grad-prem)" stroke-width="1.8" stroke-linecap="round"/>
+                <circle cx="19.5" cy="4.5" r="2" fill="url(#grad-prem)"/>
+              </svg>
+            </button>
+            <div class="profile-dropdown" id="profileDropdown">
+              <a href="/profile">Profile</a>
+              <a href="/signout">Sign Out</a>
+            </div>
+          </div>
+        {% else %}
+          <a href="/signin" class="get-started-btn">Get Started</a>
+        {% endif %}
+      </div>
+    </div>
+    <div class="container">
+      <header>
+        <h1>Toolflock — Futuristic Utility Hub</h1>
+        <p>Premium tools crafted by Erekan</p>
+      </header>
+
+      <section class="grid">
+        <div class="tool-card reveal" data-tags="date age time difference">
+          <div class="icon">🗓️</div>
+          <span class="chip">Dates</span>
+          <h3>Age & Time Difference</h3>
+          <p>Two dates in, clear breakdown out — years, months, days in one click.</p>
+          <div class="actions"><a class="btn" href="/age">Open</a></div>
+        </div>
+
+        <div class="tool-card reveal" data-tags="pdf merge split compress convert">
+          <div class="icon">📄</div>
+          <span class="chip">PDF</span>
+          <h3>PDF Tools</h3>
+          <p>Merge, split, compress, and convert PDF → Word/Excel — fast and simple.</p>
+          <div class="actions"><a class="btn" href="/pdf">Open</a></div>
+        </div>
+
+        <div class="tool-card reveal" data-tags="convert image video png jpg jpeg mp4 webm">
+          <div class="icon">🔁</div>
+          <span class="chip">Files</span>
+          <h3>File Converter</h3>
+          <p>Images and videos to your target format — with clean downloads.</p>
+          <div class="actions"><a class="btn" href="/file-converter">Open</a></div>
+        </div>
+
+        <div class="tool-card reveal" data-tags="url short link tiny bitly">
+          <div class="icon">🔗</div>
+          <span class="chip">Links</span>
+          <h3>URL Shortener</h3>
+          <p>Turn any long URL into a neat short link you can share anywhere.</p>
+          <div class="actions"><a class="btn" href="/shortener">Open</a></div>
+        </div>
+
+        <div class="tool-card reveal" data-tags="qr code generate scan">
+          <div class="icon">📷</div>
+          <span class="chip">QR</span>
+          <h3>QR Generator & Scanner</h3>
+          <p>Create custom QR codes and preview camera scan — right in your browser.</p>
+          <div class="actions"><a class="btn" href="/qr">Open</a></div>
+        </div>
+
+        <div class="tool-card reveal" data-tags="image resize compress optimize bulk">
+          <div class="icon">🖼️</div>
+          <span class="chip">Images</span>
+          <h3>Image Resizer & Compressor</h3>
+          <p>Bulk resize and compress in seconds — auto-zip for quick downloads.</p>
+          <div class="actions"><a class="btn" href="/image-tools">Open</a></div>
+        </div>
+      </section>
+      
+      <div class="explore-section">
+        <a href="/all-tools" class="explore-btn">
+          Explore All Tools
+          <span class="explore-arrow">→</span>
+        </a>
+        <p style="color: var(--muted); margin-top: 12px; font-size: 14px;">
+          Discover our complete collection of powerful utilities
+        </p>
+      </div>
+      
+      <footer class="modern-footer">
+        <div class="footer-content">
+          <div class="footer-brand">
+            <h3>Toolflock</h3>
+            <p>Empowering creativity with premium digital tools. Built with passion for developers, designers, and creators worldwide.</p>
+          </div>
+          <div class="footer-links">
+            <div class="footer-column">
+              <h4>Tools</h4>
+              <a href="/pdf">PDF Tools</a>
+              <a href="/file-converter">File Converter</a>
+              <a href="/shortener">URL Shortener</a>
+              <a href="/qr">QR Generator</a>
+            </div>
+            <div class="footer-column">
+              <h4>Company</h4>
+              <a href="/about">About Us</a>
+              <a href="/contact">Contact</a>
+              <a href="/privacy">Privacy Policy</a>
+              <a href="/terms">Terms of Service</a>
+            </div>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>© 2025 Toolflock by Erekan. Crafted with ❤️ for the global community.</p>
+          <div class="footer-tagline">
+            <span>✨ Where Innovation Meets Utility ✨</span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    <script src="/static/profile-drawer.js"></script>
+    <script>
+      const els = document.querySelectorAll('.reveal');
+      const io = new IntersectionObserver((entries)=>{
+        entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('show'); io.unobserve(e.target); } });
+      }, { threshold: .1 });
+      els.forEach(el=>io.observe(el));
+
+      // Search filter
+      const search = document.getElementById('search');
+      const cards = [...document.querySelectorAll('.tool-card')];
+      function applyFilter(){
+        const q = (search.value || '').toLowerCase().trim();
+        cards.forEach(c=>{
+          const text = (c.innerText + ' ' + (c.dataset.tags||'')).toLowerCase();
+          const show = !q || text.includes(q);
+          c.style.display = show ? '' : 'none';
+        });
+      }
+      search?.addEventListener('input', applyFilter);
+      
+      // Profile dropdown functionality
+      // dropdown logic removed; replaced by global profile drawer
+      
+      // Theme toggle functionality
+      const themeToggle = document.getElementById('themeToggle');
+      const body = document.body;
+      
+      // Load saved theme
+      const savedTheme = localStorage.getItem('toolflock-theme') || 'dark';
+      if (savedTheme === 'light') {
+        body.classList.add('light-theme');
+        themeToggle.textContent = '☀️';
+      }
+      
+      if (themeToggle) {
+        themeToggle.addEventListener('click', () => {
+          body.classList.toggle('light-theme');
+          const isLight = body.classList.contains('light-theme');
+          themeToggle.textContent = isLight ? '☀️' : '🌙';
+          localStorage.setItem('toolflock-theme', isLight ? 'light' : 'dark');
+        });
+      }
+    </script>
+  </body>
+</html>
