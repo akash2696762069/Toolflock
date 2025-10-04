@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Performance Optimizations -->
+    <link rel="dns-prefetch" href="//fonts.googleapis.com">
+    <link rel="dns-prefetch" href="//fonts.gstatic.com">
+    <link rel="dns-prefetch" href="//unpkg.com">
+    <meta name="theme-color" content="#3b82f6">
+    
+    <!-- Essential Meta Tags -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    
+    <!-- SEO Meta Tags -->
+    <title>Age Calculator & Time Difference Tool - Calculate Years, Months, Days | Toolflock</title>
+    <meta name="description" content="Free online age calculator to find exact age and time difference between any two dates. Calculate years, months, days with precise results. No registration required.">
+    <meta name="keywords" content="age calculator, time difference calculator, date calculator, years months days calculator, age finder, date difference tool">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="Age Calculator & Time Difference Tool - Toolflock">
+    <meta property="og:description" content="Calculate exact age and time difference between dates. Get years, months, days breakdown instantly.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://toolflock.com/age">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://toolflock.com/age">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="/static/styles.css">
+    <style>
+        .tool-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        .tool-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        
+        .tool-header h1 {
+            margin: 0 0 16px 0;
+            font-size: clamp(32px, 4vw, 48px);
+            font-weight: 800;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -1px;
+        }
+        
+        .tool-header p {
+            font-size: 18px;
+            color: var(--muted);
+            margin: 0;
+        }
+        
+        .calculator-card {
+            background: var(--card);
+            border: 1px solid var(--card-border);
+            border-radius: 24px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px var(--shadow);
+            transition: all 0.3s ease;
+        }
+        
+        .calculator-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 16px 48px var(--shadow-lg);
+        }
+        
+        .date-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 32px;
+            margin-bottom: 40px;
+        }
+        
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .input-group label {
+            font-weight: 600;
+            color: var(--text);
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .input-group label i {
+            color: var(--accent);
+            font-size: 20px;
+        }
+        
+        .input-group input {
+            padding: 16px 20px;
+            border: 2px solid var(--border);
+            border-radius: 16px;
+            background: white;
+            color: var(--text);
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+        
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .calculate-btn {
+            width: 100%;
+            padding: 18px 24px;
+            background: var(--accent-gradient);
+            color: white;
+            border: none;
+            border-radius: 16px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.25);
+        }
+        
+        .calculate-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(59, 130, 246, 0.35);
+        }
+        
+        .calculate-btn:active {
+            transform: translateY(-1px);
+        }
+        
+        .calculate-btn i {
+            font-size: 20px;
+        }
+        
+        .results-card {
+            background: var(--card);
+            border: 1px solid var(--card-border);
+            border-radius: 24px;
+            padding: 40px;
+            margin-top: 30px;
+            box-shadow: 0 8px 32px var(--shadow);
+            animation: slideUp 0.5s ease;
+        }
+        
+        .results-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .results-header h3 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text);
+            margin: 0 0 8px 0;
+        }
+        
+        .results-header p {
+            color: var(--muted);
+            margin: 0;
+        }
+        
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        
+        .result-item {
+            text-align: center;
+            padding: 24px 20px;
+            background: linear-gradient(135deg, var(--bg-2), var(--bg-3));
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+        }
+        
+        .result-item:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px var(--shadow);
+        }
+        
+        .result-item .value {
+            font-size: 36px;
+            font-weight: 800;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 8px;
+            line-height: 1;
+        }
+        
+        .result-item .label {
+            font-size: 14px;
+            color: var(--muted);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .error-message {
+            background: linear-gradient(135deg, #fef2f2, #fee2e2);
+            border: 2px solid #fca5a5;
+            color: #dc2626;
+            padding: 16px 20px;
+            border-radius: 16px;
+            margin-top: 20px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .error-message i {
+            font-size: 20px;
+            color: #ef4444;
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @media (max-width: 768px) {
+            .tool-container {
+                padding: 20px;
+            }
+            
+            .calculator-card, .results-card {
+                padding: 24px;
+            }
+            
+            .date-inputs {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .results-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 16px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .result-item .value {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+    {% include 'header.html' %}
+    
+    <div class="tool-container">
+        <div class="tool-header">
+            <h1>Age & Time Calculator</h1>
+            <h2 style="font-size: 18px; color: var(--muted); font-weight: 500; margin-top: 8px;">Calculate precise age and time differences between any two dates with beautiful results</h2>
+        </div>
+        
+        <div class="calculator-card">
+            <form id="diff-form">
+                <div class="date-inputs">
+                    <div class="input-group">
+                        <label for="startDate">
+                            <i class='bx bx-calendar'></i> Start Date
+                        </label>
+                        <input id="startDate" name="startDate" type="date" required />
+                    </div>
+                    <div class="input-group">
+                        <label for="endDate">
+                            <i class='bx bx-calendar-check'></i> End Date
+                        </label>
+                        <input id="endDate" name="endDate" type="date" required />
+                    </div>
+                </div>
+                <button type="submit" class="calculate-btn">
+                    <i class='bx bx-calculator'></i> Calculate Difference
+                </button>
+            </form>
+            
+            <div id="error" class="error-message" hidden>
+                <i class='bx bx-error-circle'></i>
+                <span id="error-text"></span>
+            </div>
+            
+            <div id="results" class="results-card" hidden>
+                <div class="results-header">
+                    <h3>Time Difference Results</h3>
+                    <p>Here's the detailed breakdown of the time difference</p>
+                </div>
+                <div class="results-grid">
+                    <div class="result-item">
+                        <div class="value" id="years">—</div>
+                        <div class="label">Years</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="value" id="months">—</div>
+                        <div class="label">Months</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="value" id="days">—</div>
+                        <div class="label">Days</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="value" id="totalMonths">—</div>
+                        <div class="label">Total Months</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="value" id="extraDays">—</div>
+                        <div class="label">Extra Days</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="value" id="totalDays">—</div>
+                        <div class="label">Total Days</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer class="modern-footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <h3>Toolflock</h3>
+                <p>Elegant digital tools crafted for modern productivity. Built with passion for developers, designers, and creators worldwide.</p>
+            </div>
+            <div class="footer-links">
+                <div class="footer-column">
+                    <h4>Tools</h4>
+                    <a href="/pdf">PDF Tools</a>
+                    <a href="/file-converter">File Converter</a>
+                    <a href="/shortener">URL Shortener</a>
+                    <a href="/qr">QR Generator</a>
+                </div>
+                <div class="footer-column">
+                    <h4>Company</h4>
+                    <a href="/about">About Us</a>
+                    <a href="/contact">Contact</a>
+                    <a href="/privacy">Privacy Policy</a>
+                    <a href="/terms">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2025 Toolflock by Erekan. Crafted with ❤️ for the global community.</p>
+            <div class="footer-tagline">
+                <span>✨ Where Elegance Meets Utility ✨</span>
+            </div>
+        </div>
+    </footer>
+    
+    <script>
+        // Age calculator functionality
+        const form = document.getElementById('diff-form');
+        const errorBox = document.getElementById('error');
+        const errorText = document.getElementById('error-text');
+        const results = document.getElementById('results');
+        
+        // Debug: Log elements to check if they exist
+        console.log('Form:', form);
+        console.log('Error box:', errorBox);
+        console.log('Results:', results);
+        
+        if (!form) {
+            console.error('Form element not found!');
+            return;
+        }
+        
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            console.log('Form submitted');
+            
+            if (errorBox) errorBox.hidden = true;
+            if (results) results.hidden = true;
+            
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+            
+            console.log('Dates:', { startDate, endDate });
+            
+            if (!startDate || !endDate) {
+                if (errorBox && errorText) {
+                    errorText.textContent = 'Please select both start and end dates';
+                    errorBox.hidden = false;
+                }
+                return;
+            }
+            
+            // Add loading state to button
+            const submitBtn = form.querySelector('button[type="submit"]');
+            if (!submitBtn) {
+                console.error('Submit button not found!');
+                return;
+            }
+            
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="bx bx-loader-alt bx-spin"></i> Calculating...';
+            submitBtn.disabled = true;
+            
+            try {
+                console.log('Sending request to /api/diff');
+                const res = await fetch('/api/diff', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ startDate, endDate })
+                });
+                
+                console.log('Response status:', res.status);
+                const data = await res.json();
+                console.log('Response data:', data);
+                
+                if (!res.ok) throw new Error(data.error || 'Something went wrong');
+                
+                // Update results with animation
+                const yearEl = document.getElementById('years');
+                const monthEl = document.getElementById('months');
+                const dayEl = document.getElementById('days');
+                const totalMonthsEl = document.getElementById('totalMonths');
+                const extraDaysEl = document.getElementById('extraDays');
+                const totalDaysEl = document.getElementById('totalDays');
+                
+                if (yearEl) yearEl.textContent = data.years;
+                if (monthEl) monthEl.textContent = data.months;
+                if (dayEl) dayEl.textContent = data.days;
+                if (totalMonthsEl) totalMonthsEl.textContent = data.totalMonths;
+                if (extraDaysEl) extraDaysEl.textContent = data.extraDays;
+                if (totalDaysEl) totalDaysEl.textContent = data.totalDays;
+                
+                if (results) {
+                    results.hidden = false;
+                    console.log('Results displayed successfully');
+                }
+            } catch (err) {
+                console.error('Error:', err);
+                if (errorText && errorBox) {
+                    errorText.textContent = err.message;
+                    errorBox.hidden = false;
+                }
+            } finally {
+                if (submitBtn) {
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                }
+            }
+        });
+        
+        // Set today's date as default for end date
+        document.getElementById('endDate').valueAsDate = new Date();
+    </script>
+</body>
+</html>
+
+

@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Performance Optimizations -->
+    <link rel="dns-prefetch" href="//fonts.googleapis.com">
+    <link rel="dns-prefetch" href="//fonts.gstatic.com">
+    <link rel="dns-prefetch" href="//unpkg.com">
+    <meta name="theme-color" content="#3b82f6">
+    
+    <!-- Essential Meta Tags -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    
+    <!-- SEO Meta Tags -->
+    <title>Free QR Code Generator - Create Custom QR Codes Online | Toolflock</title>
+    <meta name="description" content="Generate beautiful, customizable QR codes instantly. Support for text, URLs, colors and sizes. Free QR code maker with download options.">
+    <meta name="keywords" content="QR code generator, QR code maker, custom QR codes, QR code creator, generate QR code online">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="Free QR Code Generator - Create Custom QR Codes Online | Toolflock">
+    <meta property="og:description" content="Generate beautiful, customizable QR codes instantly. Support for text, URLs, colors and sizes. Free QR code maker with download options.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://toolflock.com/qr_tools">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://toolflock.com/qr_tools">
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code Generator - Toolflock</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/styles.css">
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <style>
+        .qr-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        .tool-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        
+        .tool-header h1 {
+            margin: 0 0 20px 0;
+            font-size: clamp(36px, 5vw, 52px);
+            font-weight: 800;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -1px;
+        }
+        
+        .tool-header p {
+            font-size: 18px;
+            color: var(--muted);
+            margin: 0;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        
+        .qr-main {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: start;
+        }
+        
+        .qr-generator {
+            background: var(--card);
+            border: 1px solid var(--card-border);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 8px 32px var(--shadow);
+            transition: all 0.3s ease;
+        }
+        
+        .qr-generator:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 16px 48px var(--shadow-lg);
+        }
+        
+        .section-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text);
+            margin: 0 0 24px 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .section-title i {
+            color: var(--accent);
+            font-size: 28px;
+        }
+        
+        .form-group {
+            margin-bottom: 24px;
+        }
+        
+        .form-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 12px;
+            font-size: 16px;
+        }
+        
+        .form-label i {
+            color: var(--accent);
+            font-size: 18px;
+        }
+        
+        .form-textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 16px 20px;
+            border: 2px solid var(--border);
+            border-radius: 16px;
+            background: white;
+            color: var(--text);
+            font-size: 16px;
+            font-family: inherit;
+            resize: vertical;
+            transition: all 0.2s ease;
+        }
+        
+        .form-textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .settings-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            background: white;
+            color: var(--text);
+            font-size: 16px;
+            transition: all 0.2s ease;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+        }
+        
+        .color-input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .color-input {
+            width: 60px;
+            height: 44px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            cursor: pointer;
+            overflow: hidden;
+            transition: all 0.2s ease;
+        }
+        
+        .color-input:hover {
+            transform: scale(1.05);
+            border-color: var(--accent);
+        }
+        
+        .color-input input {
+            width: 100%;
+            height: 100%;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .color-preview {
+            flex: 1;
+            padding: 12px 16px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            background: white;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            color: var(--text-light);
+        }
+        
+        .generate-btn {
+            width: 100%;
+            padding: 18px 24px;
+            background: var(--accent-gradient);
+            color: white;
+            border: none;
+            border-radius: 16px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.25);
+            margin-top: 8px;
+        }
+        
+        .generate-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(59, 130, 246, 0.35);
+        }
+        
+        .generate-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .generate-btn i {
+            font-size: 20px;
+        }
+        
+        .qr-preview {
+            background: var(--card);
+            border: 1px solid var(--card-border);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 8px 32px var(--shadow);
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .qr-preview:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 16px 48px var(--shadow-lg);
+        }
+        
+        .preview-placeholder {
+            width: 300px;
+            height: 300px;
+            border: 2px dashed var(--border);
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+            background: var(--bg-2);
+            transition: all 0.3s ease;
+        }
+        
+        .preview-placeholder i {
+            font-size: 48px;
+            color: var(--muted);
+            margin-bottom: 16px;
+        }
+        
+        .preview-placeholder p {
+            color: var(--muted);
+            margin: 0;
+            font-size: 16px;
+        }
+        
+        .qr-image {
+            max-width: 100%;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px var(--shadow);
+            margin-bottom: 24px;
+            transition: all 0.3s ease;
+        }
+        
+        .qr-image:hover {
+            transform: scale(1.05);
+        }
+        
+        .download-btn {
+            background: linear-gradient(135deg, var(--secondary), var(--secondary-light));
+            color: white;
+            border: none;
+            border-radius: 16px;
+            padding: 16px 32px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.25);
+        }
+        
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(16, 185, 129, 0.35);
+        }
+        
+        .download-btn i {
+            font-size: 18px;
+        }
+        
+        .error-message {
+            background: linear-gradient(135deg, #fef2f2, #fee2e2);
+            border: 2px solid #fca5a5;
+            color: #dc2626;
+            padding: 16px 20px;
+            border-radius: 16px;
+            margin-top: 20px;
+            font-weight: 600;
+            display: none;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .error-message.show {
+            display: flex;
+        }
+        
+        .error-message i {
+            font-size: 20px;
+            color: #ef4444;
+        }
+        
+        @media (max-width: 768px) {
+            .qr-container {
+                padding: 20px;
+            }
+            
+            .qr-main {
+                grid-template-columns: 1fr;
+                gap: 32px;
+            }
+            
+            .qr-generator, .qr-preview {
+                padding: 24px;
+            }
+            
+            .settings-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .preview-placeholder {
+                width: 250px;
+                height: 250px;
+            }
+        }
+    </style>
+</head>
+<body>
+    {% include 'header.html' %}
+    
+    <div class="qr-container">
+        <div class="tool-header">
+            <h1>QR Code Generator</h1>
+            <p>Create beautiful, customizable QR codes for any text, URL, or data with professional quality output.</p>
+        </div>
+        
+        <div class="qr-main">
+            <div class="qr-generator">
+                <h2 class="section-title">
+                    <i class='bx bx-cog'></i>
+                    Generate QR Code
+                </h2>
+                
+                <form id="qr-form">
+                    <div class="form-group">
+                        <label class="form-label" for="qr-text">
+                            <i class='bx bx-text'></i>
+                            Content
+                        </label>
+                        <textarea 
+                            id="qr-text" 
+                            class="form-textarea" 
+                            placeholder="Enter text, URL, or any data you want to encode in the QR code..."
+                            required
+                        ></textarea>
+                    </div>
+                    
+                    <div class="settings-grid">
+                        <div class="form-group">
+                            <label class="form-label" for="qr-size">
+                                <i class='bx bx-resize'></i>
+                                Size (px)
+                            </label>
+                            <input 
+                                type="number" 
+                                id="qr-size" 
+                                class="form-input" 
+                                value="256" 
+                                min="128" 
+                                max="1024" 
+                                step="32"
+                            >
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class='bx bx-palette'></i>
+                                Foreground Color
+                            </label>
+                            <div class="color-input-wrapper">
+                                <div class="color-input">
+                                    <input type="color" id="qr-fill" value="#000000">
+                                </div>
+                                <div class="color-preview" id="fill-preview">#000000</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class='bx bx-palette'></i>
+                            Background Color
+                        </label>
+                        <div class="color-input-wrapper">
+                            <div class="color-input">
+                                <input type="color" id="qr-back" value="#FFFFFF">
+                            </div>
+                            <div class="color-preview" id="back-preview">#FFFFFF</div>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="generate-btn">
+                        <i class='bx bx-qr'></i>
+                        Generate QR Code
+                    </button>
+                </form>
+                
+                <div class="error-message" id="error-message">
+                    <i class='bx bx-error-circle'></i>
+                    <span id="error-text">Something went wrong. Please try again.</span>
+                </div>
+            </div>
+            
+            <div class="qr-preview">
+                <h2 class="section-title">
+                    <i class='bx bx-show'></i>
+                    Preview
+                </h2>
+                
+                <div id="qr-placeholder" class="preview-placeholder">
+                    <i class='bx bx-qr'></i>
+                    <p>Your QR code will appear here</p>
+                </div>
+                
+                <div id="qr-result" style="display: none;">
+                    <img id="qr-image" class="qr-image" alt="Generated QR Code - Custom QR code created with Toolflock" loading="lazy">
+                    <br>
+                    <button id="download-btn" class="download-btn">
+                        <i class='bx bx-download'></i>
+                        Download QR Code
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer class="modern-footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <h3>Toolflock</h3>
+                <p>Elegant digital tools crafted for modern productivity. Built with passion for developers, designers, and creators worldwide.</p>
+            </div>
+            <div class="footer-links">
+                <div class="footer-column">
+                    <h4>Tools</h4>
+                    <a href="/pdf">PDF Tools</a>
+                    <a href="/file-converter">File Converter</a>
+                    <a href="/shortener">URL Shortener</a>
+                    <a href="/qr">QR Generator</a>
+                </div>
+                <div class="footer-column">
+                    <h4>Company</h4>
+                    <a href="/about">About Us</a>
+                    <a href="/contact">Contact</a>
+                    <a href="/privacy">Privacy Policy</a>
+                    <a href="/terms">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2025 Toolflock by Erekan. Crafted with ❤️ for the global community.</p>
+            <div class="footer-tagline">
+                <span>✨ Where Elegance Meets Utility ✨</span>
+            </div>
+        </div>
+    </footer>
+    
+    <script>
+        // QR Code Generator functionality
+        const form = document.getElementById('qr-form');
+        const textInput = document.getElementById('qr-text');
+        const sizeInput = document.getElementById('qr-size');
+        const fillInput = document.getElementById('qr-fill');
+        const backInput = document.getElementById('qr-back');
+        const fillPreview = document.getElementById('fill-preview');
+        const backPreview = document.getElementById('back-preview');
+        const placeholder = document.getElementById('qr-placeholder');
+        const result = document.getElementById('qr-result');
+        const qrImage = document.getElementById('qr-image');
+        const downloadBtn = document.getElementById('download-btn');
+        const errorMessage = document.getElementById('error-message');
+        const errorText = document.getElementById('error-text');
+        
+        // Update color previews
+        fillInput.addEventListener('input', (e) => {
+            fillPreview.textContent = e.target.value.toUpperCase();
+            fillPreview.style.borderColor = e.target.value;
+        });
+        
+        backInput.addEventListener('input', (e) => {
+            backPreview.textContent = e.target.value.toUpperCase();
+            backPreview.style.borderColor = e.target.value;
+        });
+        
+        // Form submission
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const text = textInput.value.trim();
+            const size = parseInt(sizeInput.value);
+            const fill = fillInput.value;
+            const back = backInput.value;
+            
+            if (!text) {
+                showError('Please enter some content to generate QR code');
+                return;
+            }
+            
+            // Show loading state
+            const submitBtn = form.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="bx bx-loader-alt bx-spin"></i> Generating...';
+            submitBtn.disabled = true;
+            
+            // Hide error message
+            errorMessage.classList.remove('show');
+            
+            try {
+                const response = await fetch('/api/qr/generate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        text: text,
+                        size: size,
+                        fill: fill,
+                        back: back
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(data.error || 'Failed to generate QR code');
+                }
+                
+                // Display the QR code
+                qrImage.src = data.pngBase64;
+                placeholder.style.display = 'none';
+                result.style.display = 'block';
+                
+                // Setup download functionality
+                downloadBtn.onclick = () => {
+                    const link = document.createElement('a');
+                    link.download = 'qr-code.png';
+                    link.href = data.pngBase64;
+                    link.click();
+                };
+                
+            } catch (error) {
+                showError(error.message);
+                placeholder.style.display = 'flex';
+                result.style.display = 'none';
+            } finally {
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
+        });
+        
+        function showError(message) {
+            errorText.textContent = message;
+            errorMessage.classList.add('show');
+        }
+        
+        // Auto-generate on input change (with debounce)
+        let timeout;
+        function autoGenerate() {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => {
+                if (textInput.value.trim()) {
+                    form.dispatchEvent(new Event('submit'));
+                }
+            }, 500);
+        }
+        
+        textInput.addEventListener('input', autoGenerate);
+        sizeInput.addEventListener('input', autoGenerate);
+        fillInput.addEventListener('input', autoGenerate);
+        backInput.addEventListener('input', autoGenerate);
+        
+        // Set example text on load
+        textInput.value = 'https://toolflock.com';
+        setTimeout(() => {
+            form.dispatchEvent(new Event('submit'));
+        }, 500);
+    </script>
+</body>
+</html>

@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Performance Optimizations -->
+    <link rel="dns-prefetch" href="//fonts.googleapis.com">
+    <link rel="dns-prefetch" href="//fonts.gstatic.com">
+    <link rel="dns-prefetch" href="//unpkg.com">
+    <meta name="theme-color" content="#3b82f6">
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - Toolflock</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/styles.css">
+    <style>
+        .about-header h1 {
+            margin: 8px 0;
+            font-size: 36px;
+            background: linear-gradient(90deg, var(--accent), var(--neon), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            background-size: 200% 100%;
+            animation: shine 6s linear infinite;
+        }
+        .about-header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+        
+        .about-header h1 {
+            margin: 0 0 16px 0;
+            font-size: 42px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent), var(--neon));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: shine 6s linear infinite;
+        }
+        
+        .about-header p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 18px;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        
+        .about-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .about-section {
+            margin-bottom: 48px;
+        }
+        
+        .about-section h2 {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: var(--text);
+        }
+        
+        .about-section p {
+            font-size: 16px;
+            line-height: 1.7;
+            color: var(--muted);
+            margin-bottom: 16px;
+        }
+        
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 24px;
+            margin-top: 32px;
+        }
+        
+        .team-member {
+            background: var(--card);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 16px;
+            padding: 24px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .team-member:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 16px 40px rgba(0,0,0,0.3);
+        }
+        
+        .team-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent), var(--neon));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 32px;
+            color: white;
+            font-weight: 700;
+        }
+        
+        .team-member h3 {
+            margin: 0 0 8px 0;
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text);
+        }
+        
+        .team-member p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 14px;
+        }
+        
+        .stats-section {
+            background: var(--card);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 20px;
+            padding: 32px;
+            margin: 48px 0;
+            text-align: center;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 32px;
+            margin-top: 24px;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 32px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent), var(--neon));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            display: block;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            color: var(--muted);
+            margin-top: 8px;
+        }
+        
+        @media (max-width: 768px) {
+            .about-header h1 {
+                font-size: 32px;
+            }
+            
+            .about-header p {
+                font-size: 16px;
+            }
+            
+            .team-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    {% include 'header.html' %}
+    
+    <div class="container">
+        <div class="about-header">
+            <h1>About Toolflock</h1>
+            <p>Empowering creativity and productivity through innovative digital tools</p>
+        </div>
+        
+        <div class="about-content">
+            <div class="about-section">
+                <h2>Our Mission</h2>
+                <p>At Toolflock, we believe that powerful tools should be accessible to everyone. Our mission is to provide developers, designers, creators, and professionals with a comprehensive suite of utilities that enhance their workflow and boost productivity.</p>
+                <p>We're committed to creating tools that are not only powerful but also intuitive, reliable, and constantly evolving to meet the needs of our global community.</p>
+            </div>
+            
+            <div class="about-section">
+                <h2>What We Do</h2>
+                <p>Toolflock offers a diverse collection of digital utilities designed to solve real-world problems:</p>
+                <ul style="color: var(--muted); line-height: 1.7; margin-left: 20px;">
+                    <li>PDF manipulation and conversion tools</li>
+                    <li>File format conversion utilities</li>
+                    <li>URL shortening and management</li>
+                    <li>QR code generation and scanning</li>
+                    <li>Image processing and optimization</li>
+                    <li>Unit and currency conversion</li>
+                    <li>Network speed testing</li>
+                    <li>Screen recording capabilities</li>
+                    <li>Grammar and spell checking</li>
+                </ul>
+            </div>
+            
+            <div class="stats-section">
+                <h2>Our Impact</h2>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <span class="stat-number">10+</span>
+                        <div class="stat-label">Tools Available</div>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">1000+</span>
+                        <div class="stat-label">Happy Users</div>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">24/7</span>
+                        <div class="stat-label">Availability</div>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">99.9%</span>
+                        <div class="stat-label">Uptime</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="about-section">
+                <h2>Our Team</h2>
+                <p>Toolflock is built and maintained by a passionate team of developers and designers who are committed to creating exceptional user experiences.</p>
+                
+                <div class="team-grid">
+                    <div class="team-member">
+                        <div class="team-avatar">E</div>
+                        <h3>Erekan</h3>
+                        <p>Founder & Lead Developer</p>
+                    </div>
+                    <div class="team-member">
+                        <div class="team-avatar">T</div>
+                        <h3>Toolflock Team</h3>
+                        <p>Development & Design</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="about-section">
+                <h2>Our Values</h2>
+                <p><strong>Innovation:</strong> We constantly explore new technologies and approaches to solve problems in creative ways.</p>
+                <p><strong>Quality:</strong> Every tool we build undergoes rigorous testing to ensure reliability and performance.</p>
+                <p><strong>Accessibility:</strong> We believe great tools should be available to everyone, regardless of their technical background.</p>
+                <p><strong>Community:</strong> We value feedback from our users and continuously improve based on their needs and suggestions.</p>
+            </div>
+            
+            <div class="about-section">
+                <h2>Get in Touch</h2>
+                <p>Have questions, suggestions, or want to collaborate? We'd love to hear from you! Reach out to us through our contact page or connect with us on social media.</p>
+                <p>Join the Toolflock community and discover how our tools can transform your digital workflow.</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer class="modern-footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <h3>Toolflock</h3>
+                <p>Empowering creativity with premium digital tools. Built with passion for developers, designers, and creators worldwide.</p>
+            </div>
+            <div class="footer-links">
+                <div class="footer-column">
+                    <h4>Tools</h4>
+                    <a href="/pdf">PDF Tools</a>
+                    <a href="/file-converter">File Converter</a>
+                    <a href="/shortener">URL Shortener</a>
+                    <a href="/qr">QR Generator</a>
+                </div>
+                <div class="footer-column">
+                    <h4>Company</h4>
+                    <a href="/about">About Us</a>
+                    <a href="/contact">Contact</a>
+                    <a href="/privacy">Privacy Policy</a>
+                    <a href="/terms">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2025 Toolflock by Erekan. Crafted with ❤️ for the global community.</p>
+            <div class="footer-tagline">
+                <span>✨ Where Innovation Meets Utility ✨</span>
+            </div>
+        </div>
+    </footer>
+    
+    <script src="/static/profile-drawer.js"></script>
+    <script>
+        // Theme toggle functionality
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        
+        // Load saved theme
+        const savedTheme = localStorage.getItem('toolflock-theme') || 'dark';
+        if (savedTheme === 'light') {
+            body.classList.add('light-theme');
+            themeToggle.textContent = '☀️';
+        }
+        
+        if (themeToggle) {
+            themeToggle.addEventListener('click', () => {
+                body.classList.toggle('light-theme');
+                const isLight = body.classList.contains('light-theme');
+                themeToggle.textContent = isLight ? '☀️' : '🌙';
+                localStorage.setItem('toolflock-theme', isLight ? 'light' : 'dark');
+            });
+        }
+        
+        // dropdown removed; global drawer handles it
+    </script>
+</body>
+</html>

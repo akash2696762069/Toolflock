@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Performance Optimizations -->
+    <link rel="dns-prefetch" href="//fonts.googleapis.com">
+    <link rel="dns-prefetch" href="//fonts.gstatic.com">
+    <link rel="dns-prefetch" href="//unpkg.com">
+    <meta name="theme-color" content="#3b82f6">
+    
+    <!-- Essential Meta Tags -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    
+    <!-- SEO Meta Tags -->
+    <title>Free PDF Tools - Merge, Split, Compress, Convert PDFs Online | Toolflock</title>
+    <meta name="description" content="Comprehensive PDF tools suite: merge multiple PDFs, split pages, compress files, convert to Word/Excel. Free online PDF editor with professional quality results.">
+    <meta name="keywords" content="PDF tools, merge PDF, split PDF, compress PDF, PDF to Word, PDF to Excel, PDF converter, online PDF editor">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="Free PDF Tools Suite - Merge, Split, Convert - Toolflock">
+    <meta property="og:description" content="Complete PDF toolkit for merging, splitting, compressing and converting PDFs. Professional quality results.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://toolflock.com/pdf">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://toolflock.com/pdf">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/styles.css">
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <style>
+        .pdf-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        .tool-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        
+        .tool-header h1 {
+            margin: 0 0 20px 0;
+            font-size: clamp(36px, 5vw, 56px);
+            font-weight: 800;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -1px;
+        }
+        
+        .tool-header p {
+            font-size: 20px;
+            color: var(--muted);
+            margin: 0;
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 32px;
+            margin-bottom: 60px;
+        }
+        
+        .pdf-tool-card {
+            background: var(--card);
+            border: 1px solid var(--card-border);
+            border-radius: 24px;
+            padding: 40px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 32px var(--shadow);
+        }
+        
+        .pdf-tool-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--accent-gradient);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .pdf-tool-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 48px var(--shadow-lg);
+            border-color: var(--accent-light);
+        }
+        
+        .pdf-tool-card:hover::before {
+            opacity: 1;
+        }
+        
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        
+        .card-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            color: white;
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .pdf-tool-card:hover .card-icon {
+            transform: scale(1.1) rotate(5deg);
+        }
+        
+        .card-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text);
+            margin: 0;
+            letter-spacing: -0.5px;
+        }
+        
+        .card-description {
+            color: var(--muted);
+            margin: 0 0 32px 0;
+            line-height: 1.6;
+            font-size: 16px;
+        }
+        
+        .upload-zone {
+            border: 2px dashed var(--border);
+            border-radius: 20px;
+            padding: 40px 24px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: var(--bg-2);
+            margin-bottom: 24px;
+            position: relative;
+        }
+        
+        .upload-zone:hover {
+            border-color: var(--accent);
+            background: var(--bg-3);
+            transform: translateY(-2px);
+        }
+        
+        .upload-zone.dragover {
+            border-color: var(--accent);
+            background: rgba(59, 130, 246, 0.05);
+            transform: scale(1.02);
+            border-style: solid;
+        }
+        
+        .upload-zone i {
+            font-size: 40px;
+            color: var(--accent);
+            margin-bottom: 16px;
+            display: block;
+        }
+        
+        .upload-zone .primary-text {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text);
+            margin: 0 0 8px 0;
+        }
+        
+        .upload-zone .secondary-text {
+            font-size: 14px;
+            color: var(--muted);
+            margin: 0;
+        }
+        
+        .file-input {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+        
+        .selected-files {
+            display: none;
+            margin-bottom: 24px;
+        }
+        
+        .selected-files.active {
+            display: block;
+        }
+        
+        .selected-files h4 {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text);
+            margin: 0 0 16px 0;
+        }
+        
+        .file-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            background: var(--bg-3);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            margin-bottom: 8px;
+        }
+        
+        .file-item i {
+            color: var(--accent);
+            font-size: 18px;
+        }
+        
+        .file-item .file-name {
+            flex: 1;
+            font-size: 14px;
+            color: var(--text);
+            font-weight: 500;
+        }
+        
+        .file-item .file-size {
+            font-size: 12px;
+            color: var(--muted);
+        }
+        
+        .process-btn {
+            width: 100%;
+            padding: 16px 24px;
+            background: var(--accent-gradient);
+            color: white;
+            border: none;
+            border-radius: 16px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.25);
+            margin-top: 8px;
+        }
+        
+        .process-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(59, 130, 246, 0.35);
+        }
+        
+        .process-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .process-btn i {
+            font-size: 18px;
+        }
+        
+        .success-message {
+            background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+            border: 2px solid #7dd3fc;
+            color: #0369a1;
+            padding: 16px 20px;
+            border-radius: 16px;
+            margin-top: 20px;
+            font-weight: 600;
+            display: none;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .success-message.show {
+            display: flex;
+        }
+        
+        .success-message i {
+            font-size: 20px;
+            color: #0284c7;
+        }
+        
+        .error-message {
+            background: linear-gradient(135deg, #fef2f2, #fee2e2);
+            border: 2px solid #fca5a5;
+            color: #dc2626;
+            padding: 16px 20px;
+            border-radius: 16px;
+            margin-top: 20px;
+            font-weight: 600;
+            display: none;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .error-message.show {
+            display: flex;
+        }
+        
+        .error-message i {
+            font-size: 20px;
+            color: #ef4444;
+        }
+        
+        @media (max-width: 768px) {
+            .pdf-container {
+                padding: 20px;
+            }
+            
+            .tools-grid {
+                grid-template-columns: 1fr;
+                gap: 24px;
+            }
+            
+            .pdf-tool-card {
+                padding: 24px;
+            }
+            
+            .upload-zone {
+                padding: 32px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    {% include 'header.html' %}
+    
+    <div class="pdf-container">
+        <div class="tool-header">
+            <h1>PDF Tools Suite</h1>
+            <p>Professional PDF processing tools with elegant interface. Merge, split, compress, and convert your PDFs with ease.</p>
+        </div>
+        
+        <div class="tools-grid">
+            <!-- PDF Merge Tool -->
+            <div class="pdf-tool-card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class='bx bx-merge'></i>
+                    </div>
+                    <h3 class="card-title">Merge PDFs</h3>
+                </div>
+                <p class="card-description">Combine multiple PDF files into a single document while maintaining quality and formatting.</p>
+                
+                <div class="upload-zone" id="merge-upload">
+                    <i class='bx bx-upload'></i>
+                    <p class="primary-text">Select PDF files to merge</p>
+                    <p class="secondary-text">Choose multiple PDFs or drag & drop them here</p>
+                    <input type="file" class="file-input" id="merge-files" multiple accept=".pdf">
+                </div>
+                
+                <div class="selected-files" id="merge-selected">
+                    <h4>Selected Files:</h4>
+                    <div id="merge-file-list"></div>
+                </div>
+                
+                <button class="process-btn" id="merge-btn" disabled>
+                    <i class='bx bx-merge'></i>
+                    Merge PDFs
+                </button>
+                
+                <div class="success-message" id="merge-success">
+                    <i class='bx bx-check-circle'></i>
+                    <span>PDFs merged successfully! Download starting...</span>
+                </div>
+                
+                <div class="error-message" id="merge-error">
+                    <i class='bx bx-error-circle'></i>
+                    <span id="merge-error-text">Something went wrong. Please try again.</span>
+                </div>
+            </div>
+            
+            <!-- PDF Split Tool -->
+            <div class="pdf-tool-card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class='bx bx-cut'></i>
+                    </div>
+                    <h3 class="card-title">Split PDF</h3>
+                </div>
+                <p class="card-description">Extract individual pages from a PDF document into separate files.</p>
+                
+                <div class="upload-zone" id="split-upload">
+                    <i class='bx bx-upload'></i>
+                    <p class="primary-text">Select PDF to split</p>
+                    <p class="secondary-text">Choose a PDF file or drag & drop it here</p>
+                    <input type="file" class="file-input" id="split-file" accept=".pdf">
+                </div>
+                
+                <div class="selected-files" id="split-selected">
+                    <h4>Selected File:</h4>
+                    <div id="split-file-info"></div>
+                </div>
+                
+                <button class="process-btn" id="split-btn" disabled>
+                    <i class='bx bx-cut'></i>
+                    Split PDF
+                </button>
+                
+                <div class="success-message" id="split-success">
+                    <i class='bx bx-check-circle'></i>
+                    <span>PDF split successfully! Download starting...</span>
+                </div>
+                
+                <div class="error-message" id="split-error">
+                    <i class='bx bx-error-circle'></i>
+                    <span id="split-error-text">Something went wrong. Please try again.</span>
+                </div>
+            </div>
+            
+            <!-- PDF Compress Tool -->
+            <div class="pdf-tool-card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class='bx bx-compress'></i>
+                    </div>
+                    <h3 class="card-title">Compress PDF</h3>
+                </div>
+                <p class="card-description">Reduce PDF file size while maintaining document quality and readability.</p>
+                
+                <div class="upload-zone" id="compress-upload">
+                    <i class='bx bx-upload'></i>
+                    <p class="primary-text">Select PDF to compress</p>
+                    <p class="secondary-text">Choose a PDF file or drag & drop it here</p>
+                    <input type="file" class="file-input" id="compress-file" accept=".pdf">
+                </div>
+                
+                <div class="selected-files" id="compress-selected">
+                    <h4>Selected File:</h4>
+                    <div id="compress-file-info"></div>
+                </div>
+                
+                <button class="process-btn" id="compress-btn" disabled>
+                    <i class='bx bx-compress'></i>
+                    Compress PDF
+                </button>
+                
+                <div class="success-message" id="compress-success">
+                    <i class='bx bx-check-circle'></i>
+                    <span>PDF compressed successfully! Download starting...</span>
+                </div>
+                
+                <div class="error-message" id="compress-error">
+                    <i class='bx bx-error-circle'></i>
+                    <span id="compress-error-text">Something went wrong. Please try again.</span>
+                </div>
+            </div>
+            
+            <!-- PDF to Word Tool -->
+            <div class="pdf-tool-card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class='bx bx-file-doc'></i>
+                    </div>
+                    <h3 class="card-title">PDF to Word</h3>
+                </div>
+                <p class="card-description">Convert PDF documents to editable Word format with preserved formatting.</p>
+                
+                <div class="upload-zone" id="word-upload">
+                    <i class='bx bx-upload'></i>
+                    <p class="primary-text">Select PDF to convert</p>
+                    <p class="secondary-text">Choose a PDF file or drag & drop it here</p>
+                    <input type="file" class="file-input" id="word-file" accept=".pdf">
+                </div>
+                
+                <div class="selected-files" id="word-selected">
+                    <h4>Selected File:</h4>
+                    <div id="word-file-info"></div>
+                </div>
+                
+                <button class="process-btn" id="word-btn" disabled>
+                    <i class='bx bx-file-doc'></i>
+                    Convert to Word
+                </button>
+                
+                <div class="success-message" id="word-success">
+                    <i class='bx bx-check-circle'></i>
+                    <span>PDF converted to Word successfully! Download starting...</span>
+                </div>
+                
+                <div class="error-message" id="word-error">
+                    <i class='bx bx-error-circle'></i>
+                    <span id="word-error-text">Something went wrong. Please try again.</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer class="modern-footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <h3>Toolflock</h3>
+                <p>Elegant digital tools crafted for modern productivity. Built with passion for developers, designers, and creators worldwide.</p>
+            </div>
+            <div class="footer-links">
+                <div class="footer-column">
+                    <h4>Tools</h4>
+                    <a href="/pdf">PDF Tools</a>
+                    <a href="/file-converter">File Converter</a>
+                    <a href="/shortener">URL Shortener</a>
+                    <a href="/qr">QR Generator</a>
+                </div>
+                <div class="footer-column">
+                    <h4>Company</h4>
+                    <a href="/about">About Us</a>
+                    <a href="/contact">Contact</a>
+                    <a href="/privacy">Privacy Policy</a>
+                    <a href="/terms">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2025 Toolflock by Erekan. Crafted with ❤️ for the global community.</p>
+            <div class="footer-tagline">
+                <span>✨ Where Elegance Meets Utility ✨</span>
+            </div>
+        </div>
+    </footer>
+    
+    <script>
+        // PDF Tools functionality
+        
+        // File size formatter
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+        
+        // Create file item HTML
+        function createFileItem(file) {
+            return `
+                <div class="file-item">
+                    <i class='bx bx-file-blank'></i>
+                    <span class="file-name">${file.name}</span>
+                    <span class="file-size">${formatFileSize(file.size)}</span>
+                </div>
+            `;
+        }
+        
+        // Handle file upload and processing
+        function setupTool(toolName, endpoint, multiple = false) {
+            const uploadZone = document.getElementById(`${toolName}-upload`);
+            const fileInput = document.getElementById(`${toolName}-${multiple ? 'files' : 'file'}`);
+            const selectedFiles = document.getElementById(`${toolName}-selected`);
+            const fileList = document.getElementById(`${toolName}-file-${multiple ? 'list' : 'info'}`);
+            const processBtn = document.getElementById(`${toolName}-btn`);
+            const successMsg = document.getElementById(`${toolName}-success`);
+            const errorMsg = document.getElementById(`${toolName}-error`);
+            const errorText = document.getElementById(`${toolName}-error-text`);
+            
+            let selectedFilesList = [];
+            
+            // Drag and drop
+            uploadZone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadZone.classList.add('dragover');
+            });
+            
+            uploadZone.addEventListener('dragleave', () => {
+                uploadZone.classList.remove('dragover');
+            });
+            
+            uploadZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadZone.classList.remove('dragover');
+                const files = Array.from(e.dataTransfer.files).filter(file => file.type === 'application/pdf');
+                handleFiles(files);
+            });
+            
+            // File input change
+            fileInput.addEventListener('change', (e) => {
+                const files = Array.from(e.target.files);
+                handleFiles(files);
+            });
+            
+            function handleFiles(files) {
+                if (!multiple && files.length > 1) {
+                    files = [files[0]];
+                }
+                
+                selectedFilesList = files;
+                
+                if (files.length > 0) {
+                    selectedFiles.classList.add('active');
+                    fileList.innerHTML = files.map(createFileItem).join('');
+                    processBtn.disabled = false;
+                } else {
+                    selectedFiles.classList.remove('active');
+                    processBtn.disabled = true;
+                }
+                
+                // Hide messages
+                successMsg.classList.remove('show');
+                errorMsg.classList.remove('show');
+            }
+            
+            // Process button click
+            processBtn.addEventListener('click', async () => {
+                if (selectedFilesList.length === 0) return;
+                
+                // Show loading state
+                const originalText = processBtn.innerHTML;
+                processBtn.innerHTML = '<i class="bx bx-loader-alt bx-spin"></i> Processing...';
+                processBtn.disabled = true;
+                
+                // Hide previous messages
+                successMsg.classList.remove('show');
+                errorMsg.classList.remove('show');
+                
+                try {
+                    const formData = new FormData();
+                    
+                    if (multiple) {
+                        selectedFilesList.forEach(file => formData.append('files', file));
+                    } else {
+                        formData.append('file', selectedFilesList[0]);
+                    }
+                    
+                    const response = await fetch(endpoint, {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.error || 'Processing failed');
+                    }
+                    
+                    // Handle file download
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = response.headers.get('Content-Disposition')?.split('filename=')[1] || `processed_${toolName}.pdf`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    window.URL.revokeObjectURL(url);
+                    
+                    successMsg.classList.add('show');
+                    
+                } catch (error) {
+                    errorText.textContent = error.message;
+                    errorMsg.classList.add('show');
+                } finally {
+                    processBtn.innerHTML = originalText;
+                    processBtn.disabled = selectedFilesList.length === 0;
+                }
+            });
+        }
+        
+        // Initialize all tools
+        setupTool('merge', '/api/pdf/merge', true);
+        setupTool('split', '/api/pdf/split');
+        setupTool('compress', '/api/pdf/compress');
+        setupTool('word', '/api/pdf/to-word');
+    </script>
+</body>
+</html>

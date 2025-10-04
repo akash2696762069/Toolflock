@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Performance Optimizations -->
+    <link rel="dns-prefetch" href="//fonts.googleapis.com">
+    <link rel="dns-prefetch" href="//fonts.gstatic.com">
+    <link rel="dns-prefetch" href="//unpkg.com">
+    <meta name="theme-color" content="#3b82f6">
+    
+    <!-- Essential Meta Tags -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    
+    <!-- SEO Meta Tags -->
+    <title>Unit Converter - Length, Weight, Temperature, Volume Converter | Toolflock</title>
+    <meta name="description" content="Convert between different units of measurement: length, weight, temperature, volume, area. Accurate unit conversion calculator.">
+    <meta name="keywords" content="unit converter, measurement converter, length converter, weight converter, temperature converter, metric converter">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="Unit Converter - Length, Weight, Temperature, Volume Converter | Toolflock">
+    <meta property="og:description" content="Convert between different units of measurement: length, weight, temperature, volume, area. Accurate unit conversion calculator.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://toolflock.com/unit_converter">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://toolflock.com/unit_converter">
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit Converter - Toolflock</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/styles.css">
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <style>
+        .unit-container { max-width: 1000px; margin: 0 auto; padding: 40px 20px; }
+        .tool-header { text-align: center; margin-bottom: 50px; }
+        .tool-header h1 { margin: 0 0 16px 0; font-size: clamp(36px, 5vw, 48px); font-weight: 800; background: var(--accent-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; letter-spacing: -1px; }
+        .converter-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); gap: 32px; }
+        .converter-card { background: var(--card); border: 1px solid var(--card-border); border-radius: 24px; padding: 32px; box-shadow: 0 8px 32px var(--shadow); transition: all 0.3s ease; }
+        .converter-card:hover { transform: translateY(-4px); box-shadow: 0 16px 48px var(--shadow-lg); }
+        .card-header { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; }
+        .card-icon { width: 56px; height: 56px; border-radius: 16px; background: linear-gradient(135deg, var(--accent), var(--accent-light)); display: flex; align-items: center; justify-content: center; font-size: 24px; color: white; box-shadow: 0 8px 20px rgba(59, 130, 246, 0.2); }
+        .card-title { font-size: 20px; font-weight: 700; color: var(--text); margin: 0; }
+        .converter-form { display: grid; grid-template-columns: 1fr auto 1fr; gap: 16px; align-items: end; }
+        .form-group { display: flex; flex-direction: column; gap: 8px; }
+        .form-label { font-size: 14px; font-weight: 600; color: var(--text); }
+        .form-input, .form-select { padding: 12px 16px; border: 2px solid var(--border); border-radius: 12px; background: white; color: var(--text); font-size: 16px; transition: all 0.2s ease; }
+        .form-input:focus, .form-select:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1); }
+        .swap-btn { background: var(--accent); color: white; border: none; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s ease; }
+        .swap-btn:hover { transform: rotate(180deg); background: var(--accent-light); }
+        .result-display { background: var(--bg-2); border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-top: 16px; text-align: center; font-size: 18px; font-weight: 600; color: var(--text); }
+        @media (max-width: 768px) { .converter-grid { grid-template-columns: 1fr; } .converter-form { grid-template-columns: 1fr; gap: 16px; } .swap-btn { width: 100%; border-radius: 12px; height: 48px; } }
+    </style>
+</head>
+<body>
+    {% include 'header.html' %}
+    <div class="unit-container">
+        <div class="tool-header">
+            <h1>Unit Converter</h1>
+            <p>Convert between different units of measurement with precision</p>
+        </div>
+        <div class="converter-grid">
+            <div class="converter-card">
+                <div class="card-header">
+                    <div class="card-icon"><i class='bx bx-ruler'></i></div>
+                    <h3 class="card-title">Length Converter</h3>
+                </div>
+                <div class="converter-form">
+                    <div class="form-group">
+                        <label class="form-label">From</label>
+                        <input type="number" class="form-input" id="length-from" placeholder="Enter value">
+                        <select class="form-select" id="length-from-unit">
+                            <option value="m">Meters</option>
+                            <option value="cm">Centimeters</option>
+                            <option value="km">Kilometers</option>
+                            <option value="ft">Feet</option>
+                            <option value="in">Inches</option>
+                        </select>
+                    </div>
+                    <button class="swap-btn" onclick="swapUnits('length')"><i class='bx bx-transfer-alt'></i></button>
+                    <div class="form-group">
+                        <label class="form-label">To</label>
+                        <select class="form-select" id="length-to-unit">
+                            <option value="ft">Feet</option>
+                            <option value="m">Meters</option>
+                            <option value="cm">Centimeters</option>
+                            <option value="km">Kilometers</option>
+                            <option value="in">Inches</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="result-display" id="length-result">Enter a value to convert</div>
+            </div>
+            
+            <div class="converter-card">
+                <div class="card-header">
+                    <div class="card-icon"><i class='bx bx-dumbbell'></i></div>
+                    <h3 class="card-title">Weight Converter</h3>
+                </div>
+                <div class="converter-form">
+                    <div class="form-group">
+                        <label class="form-label">From</label>
+                        <input type="number" class="form-input" id="weight-from" placeholder="Enter value">
+                        <select class="form-select" id="weight-from-unit">
+                            <option value="kg">Kilograms</option>
+                            <option value="g">Grams</option>
+                            <option value="lb">Pounds</option>
+                            <option value="oz">Ounces</option>
+                        </select>
+                    </div>
+                    <button class="swap-btn" onclick="swapUnits('weight')"><i class='bx bx-transfer-alt'></i></button>
+                    <div class="form-group">
+                        <label class="form-label">To</label>
+                        <select class="form-select" id="weight-to-unit">
+                            <option value="lb">Pounds</option>
+                            <option value="kg">Kilograms</option>
+                            <option value="g">Grams</option>
+                            <option value="oz">Ounces</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="result-display" id="weight-result">Enter a value to convert</div>
+            </div>
+            
+            <div class="converter-card">
+                <div class="card-header">
+                    <div class="card-icon"><i class='bx bx-thermometer'></i></div>
+                    <h3 class="card-title">Temperature Converter</h3>
+                </div>
+                <div class="converter-form">
+                    <div class="form-group">
+                        <label class="form-label">From</label>
+                        <input type="number" class="form-input" id="temp-from" placeholder="Enter value">
+                        <select class="form-select" id="temp-from-unit">
+                            <option value="c">Celsius</option>
+                            <option value="f">Fahrenheit</option>
+                            <option value="k">Kelvin</option>
+                        </select>
+                    </div>
+                    <button class="swap-btn" onclick="swapUnits('temp')"><i class='bx bx-transfer-alt'></i></button>
+                    <div class="form-group">
+                        <label class="form-label">To</label>
+                        <select class="form-select" id="temp-to-unit">
+                            <option value="f">Fahrenheit</option>
+                            <option value="c">Celsius</option>
+                            <option value="k">Kelvin</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="result-display" id="temp-result">Enter a value to convert</div>
+            </div>
+            
+            <div class="converter-card">
+                <div class="card-header">
+                    <div class="card-icon"><i class='bx bx-dollar'></i></div>
+                    <h3 class="card-title">Currency Converter</h3>
+                </div>
+                <div class="converter-form">
+                    <div class="form-group">
+                        <label class="form-label">From</label>
+                        <input type="number" class="form-input" id="currency-from" placeholder="Enter amount">
+                        <select class="form-select" id="currency-from-unit">
+                            <option value="USD">USD</option>
+                            <option value="EUR">EUR</option>
+                            <option value="GBP">GBP</option>
+                            <option value="JPY">JPY</option>
+                            <option value="INR">INR</option>
+                        </select>
+                    </div>
+                    <button class="swap-btn" onclick="swapUnits('currency')"><i class='bx bx-transfer-alt'></i></button>
+                    <div class="form-group">
+                        <label class="form-label">To</label>
+                        <select class="form-select" id="currency-to-unit">
+                            <option value="INR">INR</option>
+                            <option value="USD">USD</option>
+                            <option value="EUR">EUR</option>
+                            <option value="GBP">GBP</option>
+                            <option value="JPY">JPY</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="result-display" id="currency-result">Enter an amount to convert</div>
+            </div>
+        </div>
+    </div>
+    <footer class="modern-footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <h3>Toolflock</h3>
+                <p>Elegant digital tools crafted for modern productivity. Built with passion for developers, designers, and creators worldwide.</p>
+            </div>
+            <div class="footer-links">
+                <div class="footer-column">
+                    <h4>Tools</h4>
+                    <a href="/pdf">PDF Tools</a>
+                    <a href="/file-converter">File Converter</a>
+                    <a href="/shortener">URL Shortener</a>
+                    <a href="/qr">QR Generator</a>
+                </div>
+                <div class="footer-column">
+                    <h4>Company</h4>
+                    <a href="/about">About Us</a>
+                    <a href="/contact">Contact</a>
+                    <a href="/privacy">Privacy Policy</a>
+                    <a href="/terms">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2025 Toolflock by Erekan. Crafted with ❤️ for the global community.</p>
+            <div class="footer-tagline">
+                <span>✨ Where Elegance Meets Utility ✨</span>
+            </div>
+        </div>
+    </footer>
+    <script>
+        const conversions = {
+            length: { m: 1, cm: 0.01, km: 1000, ft: 0.3048, in: 0.0254 },
+            weight: { kg: 1, g: 0.001, lb: 0.453592, oz: 0.0283495 },
+            temp: {
+                c: { c: v => v, f: v => v * 9/5 + 32, k: v => v + 273.15 },
+                f: { c: v => (v - 32) * 5/9, f: v => v, k: v => (v - 32) * 5/9 + 273.15 },
+                k: { c: v => v - 273.15, f: v => (v - 273.15) * 9/5 + 32, k: v => v }
+            }
+        };
+        
+        function convert(type) {
+            const fromInput = document.getElementById(`${type}-from`);
+            const fromUnit = document.getElementById(`${type}-from-unit`).value;
+            const toUnit = document.getElementById(`${type}-to-unit`).value;
+            const result = document.getElementById(`${type}-result`);
+            
+            const value = parseFloat(fromInput.value);
+            if (isNaN(value)) {
+                result.textContent = 'Enter a valid number';
+                return;
+            }
+            
+            if (type === 'currency') {
+                convertCurrency(value, fromUnit, toUnit, result);
+                return;
+            }
+            
+            let converted;
+            if (type === 'temp') {
+                converted = conversions.temp[fromUnit][toUnit](value);
+            } else {
+                const baseValue = value * conversions[type][fromUnit];
+                converted = baseValue / conversions[type][toUnit];
+            }
+            
+            result.textContent = `${converted.toFixed(4)} ${getUnitName(type, toUnit)}`;
+        }
+        
+        async function convertCurrency(amount, from, to, resultElement) {
+            try {
+                const response = await fetch('/api/currency', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ amount, from, to })
+                });
+                const data = await response.json();
+                if (response.ok) {
+                    resultElement.textContent = `${data.converted.toFixed(2)} ${to}`;
+                } else {
+                    resultElement.textContent = 'Currency conversion failed';
+                }
+            } catch (error) {
+                resultElement.textContent = 'Network error';
+            }
+        }
+        
+        function getUnitName(type, unit) {
+            const names = {
+                length: { m: 'meters', cm: 'centimeters', km: 'kilometers', ft: 'feet', in: 'inches' },
+                weight: { kg: 'kilograms', g: 'grams', lb: 'pounds', oz: 'ounces' },
+                temp: { c: '°C', f: '°F', k: 'K' }
+            };
+            return names[type][unit] || unit;
+        }
+        
+        function swapUnits(type) {
+            const fromUnit = document.getElementById(`${type}-from-unit`);
+            const toUnit = document.getElementById(`${type}-to-unit`);
+            [fromUnit.value, toUnit.value] = [toUnit.value, fromUnit.value];
+            convert(type);
+        }
+        
+        // Add event listeners
+        ['length', 'weight', 'temp', 'currency'].forEach(type => {
+            document.getElementById(`${type}-from`).addEventListener('input', () => convert(type));
+            document.getElementById(`${type}-from-unit`).addEventListener('change', () => convert(type));
+            document.getElementById(`${type}-to-unit`).addEventListener('change', () => convert(type));
+        });
+    </script>
+</body>
+</html>

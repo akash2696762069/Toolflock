@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Performance Optimizations -->
+    <link rel="dns-prefetch" href="//fonts.googleapis.com">
+    <link rel="dns-prefetch" href="//fonts.gstatic.com">
+    <link rel="dns-prefetch" href="//unpkg.com">
+    <meta name="theme-color" content="#3b82f6">
+    
+    <!-- Essential Meta Tags -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    
+    <!-- SEO Meta Tags -->
+    <title>Free URL Shortener - Create Short Links Online | Custom Short URLs | Toolflock</title>
+    <meta name="description" content="Free URL shortener to create short, memorable links from long URLs. Generate custom short links with analytics. No registration required, instant results.">
+    <meta name="keywords" content="URL shortener, short links, link shortener, tiny URL, custom short URL, link generator, shorten URL">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="Free URL Shortener - Create Short Links - Toolflock">
+    <meta property="og:description" content="Create short, shareable links from long URLs instantly. Free URL shortener with custom options.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://toolflock.com/shortener">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://toolflock.com/shortener">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/styles.css">
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <style>
+        .shortener-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        .tool-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        
+        .tool-header h1 {
+            margin: 0 0 20px 0;
+            font-size: clamp(36px, 5vw, 52px);
+            font-weight: 800;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -1px;
+        }
+        
+        .tool-header p {
+            font-size: 18px;
+            color: var(--muted);
+            margin: 0;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        
+        .shortener-card {
+            background: var(--card);
+            border: 1px solid var(--card-border);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 8px 32px var(--shadow);
+            transition: all 0.3s ease;
+            margin-bottom: 32px;
+        }
+        
+        .shortener-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 16px 48px var(--shadow-lg);
+        }
+        
+        .form-group {
+            margin-bottom: 32px;
+        }
+        
+        .form-label {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 16px;
+            font-size: 18px;
+        }
+        
+        .form-label i {
+            color: var(--accent);
+            font-size: 24px;
+        }
+        
+        .url-input-wrapper {
+            position: relative;
+            margin-bottom: 24px;
+        }
+        
+        .url-input {
+            width: 100%;
+            padding: 20px 24px;
+            border: 2px solid var(--border);
+            border-radius: 16px;
+            background: white;
+            color: var(--text);
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            padding-right: 120px;
+        }
+        
+        .url-input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .shorten-btn {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            padding: 12px 20px;
+            background: var(--accent-gradient);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
+        }
+        
+        .shorten-btn:hover {
+            transform: translateY(-50%) translateY(-2px);
+            box-shadow: 0 6px 16px rgba(59, 130, 246, 0.35);
+        }
+        
+        .shorten-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: translateY(-50%);
+        }
+        
+        .result-card {
+            background: linear-gradient(135deg, var(--bg-2), var(--bg-3));
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 32px;
+            margin-top: 32px;
+            display: none;
+            animation: slideUp 0.5s ease;
+        }
+        
+        .result-card.show {
+            display: block;
+        }
+        
+        .result-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        
+        .result-header i {
+            color: var(--secondary);
+            font-size: 24px;
+        }
+        
+        .result-header h3 {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text);
+            margin: 0;
+        }
+        
+        .original-url {
+            margin-bottom: 20px;
+        }
+        
+        .url-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--muted);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .url-display {
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.5);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            font-size: 14px;
+            color: var(--text-light);
+            word-break: break-all;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .short-url {
+            margin-bottom: 24px;
+        }
+        
+        .short-url-display {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 20px;
+            background: white;
+            border: 2px solid var(--accent);
+            border-radius: 16px;
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--accent);
+            position: relative;
+        }
+        
+        .short-url-link {
+            flex: 1;
+            color: var(--accent);
+            text-decoration: none;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .short-url-link:hover {
+            text-decoration: underline;
+        }
+        
+        .copy-btn {
+            background: var(--accent-gradient);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 8px 12px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+        }
+        
+        .copy-btn:hover {
+            transform: scale(1.05);
+        }
+        
+        .copy-btn.copied {
+            background: var(--secondary);
+        }
+        
+        .actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        
+        .action-btn {
+            background: var(--bg-3);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 12px 16px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+            text-decoration: none;
+        }
+        
+        .action-btn:hover {
+            background: var(--accent);
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        .action-btn i {
+            font-size: 16px;
+        }
+        
+        .error-message {
+            background: linear-gradient(135deg, #fef2f2, #fee2e2);
+            border: 2px solid #fca5a5;
+            color: #dc2626;
+            padding: 16px 20px;
+            border-radius: 16px;
+            margin-top: 20px;
+            font-weight: 600;
+            display: none;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .error-message.show {
+            display: flex;
+        }
+        
+        .error-message i {
+            font-size: 20px;
+            color: #ef4444;
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .shortener-container {
+                padding: 20px;
+            }
+            
+            .shortener-card {
+                padding: 24px;
+            }
+            
+            .url-input {
+                padding-right: 24px;
+                margin-bottom: 16px;
+            }
+            
+            .shorten-btn {
+                position: static;
+                transform: none;
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .shorten-btn:hover {
+                transform: translateY(-2px);
+            }
+            
+            .actions {
+                flex-direction: column;
+            }
+            
+            .action-btn {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    {% include 'header.html' %}
+    
+    <div class="shortener-container">
+        <div class="tool-header">
+            <h1>URL Shortener</h1>
+            <p>Transform long URLs into short, memorable links that are easy to share and track.</p>
+        </div>
+        
+        <div class="shortener-card">
+            <div class="form-group">
+                <label class="form-label">
+                    <i class='bx bx-link'></i>
+                    Enter URL to Shorten
+                </label>
+                
+                <form id="shorten-form">
+                    <div class="url-input-wrapper">
+                        <input 
+                            type="url" 
+                            id="url-input" 
+                            class="url-input" 
+                            placeholder="https://example.com/very-long-url-that-needs-shortening"
+                            required
+                        >
+                        <button type="submit" class="shorten-btn">
+                            <i class='bx bx-cut'></i>
+                            Shorten
+                        </button>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="error-message" id="error-message">
+                <i class='bx bx-error-circle'></i>
+                <span id="error-text">Something went wrong. Please try again.</span>
+            </div>
+            
+            <div class="result-card" id="result-card">
+                <div class="result-header">
+                    <i class='bx bx-check-circle'></i>
+                    <h3>URL Shortened Successfully!</h3>
+                </div>
+                
+                <div class="original-url">
+                    <div class="url-label">Original URL</div>
+                    <div class="url-display" id="original-url-display"></div>
+                </div>
+                
+                <div class="short-url">
+                    <div class="url-label">Short URL</div>
+                    <div class="short-url-display">
+                        <a href="#" id="short-url-link" class="short-url-link" target="_blank"></a>
+                        <button class="copy-btn" id="copy-btn">
+                            <i class='bx bx-copy'></i>
+                            Copy
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="actions">
+                    <button class="action-btn" id="test-btn">
+                        <i class='bx bx-link-external'></i>
+                        Test Link
+                    </button>
+                    <button class="action-btn" id="new-btn">
+                        <i class='bx bx-plus'></i>
+                        Shorten Another
+                    </button>
+                    <button class="action-btn" id="share-btn">
+                        <i class='bx bx-share'></i>
+                        Share
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer class="modern-footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <h3>Toolflock</h3>
+                <p>Elegant digital tools crafted for modern productivity. Built with passion for developers, designers, and creators worldwide.</p>
+            </div>
+            <div class="footer-links">
+                <div class="footer-column">
+                    <h4>Tools</h4>
+                    <a href="/pdf">PDF Tools</a>
+                    <a href="/file-converter">File Converter</a>
+                    <a href="/shortener">URL Shortener</a>
+                    <a href="/qr">QR Generator</a>
+                </div>
+                <div class="footer-column">
+                    <h4>Company</h4>
+                    <a href="/about">About Us</a>
+                    <a href="/contact">Contact</a>
+                    <a href="/privacy">Privacy Policy</a>
+                    <a href="/terms">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2025 Toolflock by Erekan. Crafted with ❤️ for the global community.</p>
+            <div class="footer-tagline">
+                <span>✨ Where Elegance Meets Utility ✨</span>
+            </div>
+        </div>
+    </footer>
+    
+    <script>
+        // URL Shortener functionality
+        const form = document.getElementById('shorten-form');
+        const urlInput = document.getElementById('url-input');
+        const resultCard = document.getElementById('result-card');
+        const originalUrlDisplay = document.getElementById('original-url-display');
+        const shortUrlLink = document.getElementById('short-url-link');
+        const copyBtn = document.getElementById('copy-btn');
+        const testBtn = document.getElementById('test-btn');
+        const newBtn = document.getElementById('new-btn');
+        const shareBtn = document.getElementById('share-btn');
+        const errorMessage = document.getElementById('error-message');
+        const errorText = document.getElementById('error-text');
+        
+        let currentShortUrl = '';
+        let currentOriginalUrl = '';
+        
+        // Form submission
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const url = urlInput.value.trim();
+            
+            if (!url) {
+                showError('Please enter a URL to shorten');
+                return;
+            }
+            
+            // Basic URL validation
+            try {
+                new URL(url);
+            } catch {
+                showError('Please enter a valid URL (include http:// or https://)');
+                return;
+            }
+            
+            // Show loading state
+            const submitBtn = form.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="bx bx-loader-alt bx-spin"></i> Shortening...';
+            submitBtn.disabled = true;
+            
+            // Hide error and result
+            errorMessage.classList.remove('show');
+            resultCard.classList.remove('show');
+            
+            try {
+                const response = await fetch('/api/shorten', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ url: url })
+                });
+                
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(data.error || 'Failed to shorten URL');
+                }
+                
+                // Display result
+                currentOriginalUrl = url;
+                currentShortUrl = data.shortUrl;
+                
+                originalUrlDisplay.textContent = url;
+                shortUrlLink.textContent = data.shortUrl;
+                shortUrlLink.href = data.shortUrl;
+                
+                resultCard.classList.add('show');
+                
+                // Reset copy button
+                copyBtn.innerHTML = '<i class="bx bx-copy"></i> Copy';
+                copyBtn.classList.remove('copied');
+                
+            } catch (error) {
+                showError(error.message);
+            } finally {
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
+        });
+        
+        // Copy to clipboard
+        copyBtn.addEventListener('click', async () => {
+            try {
+                await navigator.clipboard.writeText(currentShortUrl);
+                copyBtn.innerHTML = '<i class="bx bx-check"></i> Copied!';
+                copyBtn.classList.add('copied');
+                
+                setTimeout(() => {
+                    copyBtn.innerHTML = '<i class="bx bx-copy"></i> Copy';
+                    copyBtn.classList.remove('copied');
+                }, 2000);
+            } catch (error) {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = currentShortUrl;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                
+                copyBtn.innerHTML = '<i class="bx bx-check"></i> Copied!';
+                copyBtn.classList.add('copied');
+                
+                setTimeout(() => {
+                    copyBtn.innerHTML = '<i class="bx bx-copy"></i> Copy';
+                    copyBtn.classList.remove('copied');
+                }, 2000);
+            }
+        });
+        
+        // Test link
+        testBtn.addEventListener('click', () => {
+            window.open(currentShortUrl, '_blank');
+        });
+        
+        // New URL
+        newBtn.addEventListener('click', () => {
+            urlInput.value = '';
+            urlInput.focus();
+            resultCard.classList.remove('show');
+            errorMessage.classList.remove('show');
+        });
+        
+        // Share link
+        shareBtn.addEventListener('click', async () => {
+            if (navigator.share) {
+                try {
+                    await navigator.share({
+                        title: 'Shortened URL',
+                        text: 'Check out this shortened URL:',
+                        url: currentShortUrl
+                    });
+                } catch (error) {
+                    // Fallback to copy
+                    copyBtn.click();
+                }
+            } else {
+                // Fallback to copy
+                copyBtn.click();
+            }
+        });
+        
+        function showError(message) {
+            errorText.textContent = message;
+            errorMessage.classList.add('show');
+        }
+        
+        // Focus input on load
+        urlInput.focus();
+    </script>
+</body>
+</html>

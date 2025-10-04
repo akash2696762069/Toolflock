@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Performance Optimizations -->
+    <link rel="dns-prefetch" href="//fonts.googleapis.com">
+    <link rel="dns-prefetch" href="//fonts.gstatic.com">
+    <link rel="dns-prefetch" href="//unpkg.com">
+    <meta name="theme-color" content="#3b82f6">
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terms of Service - Toolflock</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/styles.css">
+    <style>
+        .terms-header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+        
+        .terms-header h1 {
+            margin: 0 0 16px 0;
+            font-size: 42px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent), var(--neon));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: shine 6s linear infinite;
+        }
+        
+        .terms-header p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 18px;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        
+        .terms-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .terms-section {
+            margin-bottom: 40px;
+        }
+        
+        .terms-section h2 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: var(--text);
+            padding-bottom: 8px;
+            border-bottom: 2px solid rgba(122,92,255,0.3);
+        }
+        
+        .terms-section p {
+            font-size: 16px;
+            line-height: 1.7;
+            color: var(--muted);
+            margin-bottom: 16px;
+        }
+        
+        .terms-section ul {
+            color: var(--muted);
+            line-height: 1.7;
+            margin-left: 20px;
+            margin-bottom: 16px;
+        }
+        
+        .terms-section li {
+            margin-bottom: 8px;
+        }
+        
+        .last-updated {
+            background: var(--card);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 16px;
+            padding: 24px;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .last-updated h3 {
+            margin: 0 0 8px 0;
+            color: var(--accent);
+            font-size: 18px;
+        }
+        
+        .last-updated p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 14px;
+        }
+        
+        .contact-info {
+            background: var(--card);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 16px;
+            padding: 24px;
+            text-align: center;
+            margin-top: 40px;
+        }
+        
+        .contact-info h3 {
+            margin: 0 0 16px 0;
+            color: var(--text);
+            font-size: 20px;
+        }
+        
+        .contact-info p {
+            margin: 0 0 16px 0;
+            color: var(--muted);
+        }
+        
+        .contact-info a {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .contact-info a:hover {
+            color: var(--neon);
+        }
+        
+        @media (max-width: 768px) {
+            .terms-header h1 {
+                font-size: 32px;
+            }
+            
+            .terms-header p {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div>
+            <a href="/" class="brand">Toolflock</a><span class="byline">by Erekan</span>
+        </div>
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/all-tools">All Tools</a>
+            <button class="theme-toggle" id="themeToggle" title="Toggle theme">🌙</button>
+            {% if current_user.is_authenticated %}
+                <div class="profile-menu">
+                    <button class="profile-btn" id="profileBtn">
+                        <div class="profile-avatar">{{ current_user.name[0].upper() }}</div>
+                    </button>
+                    <div class="profile-dropdown" id="profileDropdown">
+                        <a href="/profile">Profile</a>
+                        <a href="/signout">Sign Out</a>
+                    </div>
+                </div>
+            {% else %}
+                <a href="/signin" class="get-started-btn">Get Started</a>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="terms-header">
+            <h1>Terms of Service</h1>
+            <p>Please read these terms carefully before using our services.</p>
+        </div>
+        
+        <div class="last-updated">
+            <h3>📅 Last Updated</h3>
+            <p>January 15, 2025</p>
+        </div>
+        
+        <div class="terms-content">
+            <div class="terms-section">
+                <h2>1. Acceptance of Terms</h2>
+                <p>By accessing and using Toolflock's services, you accept and agree to be bound by the terms and provision of this agreement. If you do not agree to abide by the above, please do not use this service.</p>
+            </div>
+            
+            <div class="terms-section">
+                <h2>2. Description of Service</h2>
+                <p>Toolflock provides a collection of digital tools and utilities designed to enhance productivity and creativity. Our services include but are not limited to:</p>
+                <ul>
+                    <li>PDF manipulation and conversion tools</li>
+                    <li>File format conversion utilities</li>
+                    <li>URL shortening and management</li>
+                    <li>QR code generation and scanning</li>
+                    <li>Image processing and optimization</li>
+                    <li>Unit and currency conversion</li>
+                    <li>Network speed testing</li>
+                    <li>Screen recording capabilities</li>
+                    <li>Grammar and spell checking</li>
+                </ul>
+            </div>
+            
+            <div class="terms-section">
+                <h2>3. User Accounts</h2>
+                <p>To access certain features of our services, you may be required to create an account. You are responsible for:</p>
+                <ul>
+                    <li>Maintaining the confidentiality of your account credentials</li>
+                    <li>All activities that occur under your account</li>
+                    <li>Notifying us immediately of any unauthorized use</li>
+                    <li>Ensuring your account information is accurate and up-to-date</li>
+                </ul>
+            </div>
+            
+            <div class="terms-section">
+                <h2>4. Acceptable Use</h2>
+                <p>You agree to use our services only for lawful purposes and in accordance with these Terms. You agree not to:</p>
+                <ul>
+                    <li>Use the services for any illegal or unauthorized purpose</li>
+                    <li>Violate any applicable laws or regulations</li>
+                    <li>Infringe upon the rights of others</li>
+                    <li>Attempt to gain unauthorized access to our systems</li>
+                    <li>Interfere with or disrupt the services</li>
+                    <li>Upload or transmit malicious code or content</li>
+                </ul>
+            </div>
+            
+            <div class="terms-section">
+                <h2>5. Intellectual Property</h2>
+                <p>The services and their original content, features, and functionality are and will remain the exclusive property of Toolflock and its licensors. The services are protected by copyright, trademark, and other laws.</p>
+                <p>You retain ownership of any content you upload or create using our services, but you grant us a license to use, store, and process such content to provide the services.</p>
+            </div>
+            
+            <div class="terms-section">
+                <h2>6. Privacy and Data</h2>
+                <p>Your privacy is important to us. Our collection and use of personal information is governed by our Privacy Policy, which is incorporated into these Terms by reference.</p>
+                <p>By using our services, you consent to the collection and use of information as outlined in our Privacy Policy.</p>
+            </div>
+            
+            <div class="terms-section">
+                <h2>7. Service Availability</h2>
+                <p>We strive to maintain high availability of our services, but we do not guarantee that the services will be available at all times. We may:</p>
+                <ul>
+                    <li>Perform maintenance and updates</li>
+                    <li>Experience technical difficulties</li>
+                    <li>Modify or discontinue services with notice</li>
+                </ul>
+                <p>We are not liable for any interruptions or unavailability of the services.</p>
+            </div>
+            
+            <div class="terms-section">
+                <h2>8. Limitation of Liability</h2>
+                <p>To the maximum extent permitted by law, Toolflock shall not be liable for any indirect, incidental, special, consequential, or punitive damages, including but not limited to:</p>
+                <ul>
+                    <li>Loss of profits, data, or use</li>
+                    <li>Business interruption</li>
+                    <li>Computer or system failure</li>
+                    <li>Any damages resulting from the use of our services</li>
+                </ul>
+            </div>
+            
+            <div class="terms-section">
+                <h2>9. Disclaimers</h2>
+                <p>Our services are provided "as is" and "as available" without warranties of any kind. We disclaim all warranties, express or implied, including but not limited to:</p>
+                <ul>
+                    <li>Warranties of merchantability</li>
+                    <li>Fitness for a particular purpose</li>
+                    <li>Non-infringement</li>
+                    <li>Accuracy or completeness of results</li>
+                </ul>
+            </div>
+            
+            <div class="terms-section">
+                <h2>10. Indemnification</h2>
+                <p>You agree to indemnify and hold harmless Toolflock, its officers, directors, employees, and agents from any claims, damages, losses, or expenses arising from:</p>
+                <ul>
+                    <li>Your use of the services</li>
+                    <li>Your violation of these Terms</li>
+                    <li>Your violation of any rights of another party</li>
+                </ul>
+            </div>
+            
+            <div class="terms-section">
+                <h2>11. Termination</h2>
+                <p>We may terminate or suspend your account and access to our services at any time, with or without cause, with or without notice. You may also terminate your account at any time.</p>
+                <p>Upon termination, your right to use the services will cease immediately, and we may delete your account and data.</p>
+            </div>
+            
+            <div class="terms-section">
+                <h2>12. Governing Law</h2>
+                <p>These Terms shall be governed by and construed in accordance with the laws of [Your Jurisdiction], without regard to its conflict of law provisions.</p>
+                <p>Any disputes arising from these Terms or the services shall be resolved in the courts of [Your Jurisdiction].</p>
+            </div>
+            
+            <div class="terms-section">
+                <h2>13. Changes to Terms</h2>
+                <p>We reserve the right to modify these Terms at any time. We will notify users of any material changes by:</p>
+                <ul>
+                    <li>Posting the updated Terms on our website</li>
+                    <li>Sending email notifications to registered users</li>
+                    <li>Updating the "Last Updated" date</li>
+                </ul>
+                <p>Your continued use of the services after changes constitutes acceptance of the updated Terms.</p>
+            </div>
+            
+            <div class="terms-section">
+                <h2>14. Contact Information</h2>
+                <p>If you have any questions about these Terms of Service, please contact us:</p>
+                <ul>
+                    <li>Email: legal@toolflock.com</li>
+                    <li>Website: toolflock.com</li>
+                    <li>Address: [Your Business Address]</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="contact-info">
+            <h3>Questions About Terms?</h3>
+            <p>We're here to help! If you have any questions about these terms, don't hesitate to reach out.</p>
+            <a href="/contact">Contact Our Legal Team</a>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer class="modern-footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <h3>Toolflock</h3>
+                <p>Empowering creativity with premium digital tools. Built with passion for developers, designers, and creators worldwide.</p>
+            </div>
+            <div class="footer-links">
+                <div class="footer-column">
+                    <h4>Tools</h4>
+                    <a href="/pdf">PDF Tools</a>
+                    <a href="/file-converter">File Converter</a>
+                    <a href="/shortener">URL Shortener</a>
+                    <a href="/qr">QR Generator</a>
+                </div>
+                <div class="footer-column">
+                    <h4>Company</h4>
+                    <a href="/about">About Us</a>
+                    <a href="/contact">Contact</a>
+                    <a href="/privacy">Privacy Policy</a>
+                    <a href="/terms">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2025 Toolflock by Erekan. Crafted with ❤️ for the global community.</p>
+            <div class="footer-tagline">
+                <span>✨ Where Innovation Meets Utility ✨</span>
+            </div>
+        </div>
+    </footer>
+    
+    <script src="/static/profile-drawer.js"></script>
+    <script>
+        // Theme toggle functionality
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        
+        // Load saved theme
+        const savedTheme = localStorage.getItem('toolflock-theme') || 'dark';
+        if (savedTheme === 'light') {
+            body.classList.add('light-theme');
+            themeToggle.textContent = '☀️';
+        }
+        
+        if (themeToggle) {
+            themeToggle.addEventListener('click', () => {
+                body.classList.toggle('light-theme');
+                const isLight = body.classList.contains('light-theme');
+                themeToggle.textContent = isLight ? '☀️' : '🌙';
+                localStorage.setItem('toolflock-theme', isLight ? 'light' : 'dark');
+            });
+        }
+        
+        // dropdown removed; global drawer handles it
+    </script>
+</body>
+</html>

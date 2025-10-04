@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Performance Optimizations -->
+    <link rel="dns-prefetch" href="//fonts.googleapis.com">
+    <link rel="dns-prefetch" href="//fonts.gstatic.com">
+    <link rel="dns-prefetch" href="//unpkg.com">
+    <meta name="theme-color" content="#3b82f6">
+    
+    <!-- Essential Meta Tags -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    
+    <!-- SEO Meta Tags -->
+    <title>Grammar Checker & Spell Check - Free Online Proofreading Tool | Toolflock</title>
+    <meta name="description" content="Check grammar, spelling and writing errors online. Free grammar checker with suggestions and corrections. Improve your writing quality.">
+    <meta name="keywords" content="grammar checker, spell checker, proofreading tool, grammar check online, spelling correction">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="Grammar Checker & Spell Check - Free Online Proofreading Tool | Toolflock">
+    <meta property="og:description" content="Check grammar, spelling and writing errors online. Free grammar checker with suggestions and corrections. Improve your writing quality.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://toolflock.com/grammar">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://toolflock.com/grammar">
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grammar Checker - Toolflock</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/styles.css">
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <style>
+        .grammar-container { max-width: 1000px; margin: 0 auto; padding: 40px 20px; }
+        .tool-header { text-align: center; margin-bottom: 50px; }
+        .tool-header h1 { margin: 0 0 16px 0; font-size: clamp(36px, 5vw, 48px); font-weight: 800; background: var(--accent-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; letter-spacing: -1px; }
+        .grammar-main { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+        .grammar-input { background: var(--card); border: 1px solid var(--card-border); border-radius: 24px; padding: 32px; box-shadow: 0 8px 32px var(--shadow); }
+        .grammar-input:hover { transform: translateY(-4px); box-shadow: 0 16px 48px var(--shadow-lg); }
+        .section-title { font-size: 24px; font-weight: 700; color: var(--text); margin: 0 0 24px 0; display: flex; align-items: center; gap: 12px; }
+        .section-title i { color: var(--accent); font-size: 28px; }
+        .text-input { width: 100%; min-height: 200px; padding: 20px; border: 2px solid var(--border); border-radius: 16px; background: white; color: var(--text); font-size: 16px; font-family: inherit; resize: vertical; transition: all 0.2s ease; }
+        .text-input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1); }
+        .check-btn { width: 100%; padding: 16px 24px; background: var(--accent-gradient); color: white; border: none; border-radius: 16px; font-size: 16px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 12px; transition: all 0.3s ease; box-shadow: 0 8px 20px rgba(59, 130, 246, 0.25); margin-top: 20px; }
+        .check-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(59, 130, 246, 0.35); }
+        .results-panel { background: var(--card); border: 1px solid var(--card-border); border-radius: 24px; padding: 32px; box-shadow: 0 8px 32px var(--shadow); }
+        .error-item { padding: 16px 20px; background: var(--bg-2); border: 1px solid var(--border); border-radius: 16px; margin-bottom: 16px; }
+        .error-word { font-weight: 700; color: #dc2626; font-size: 16px; margin-bottom: 8px; }
+        .suggestions { display: flex; flex-wrap: wrap; gap: 8px; }
+        .suggestion { background: var(--accent); color: white; padding: 4px 12px; border-radius: 8px; font-size: 14px; cursor: pointer; transition: all 0.2s ease; }
+        .suggestion:hover { background: var(--accent-light); transform: translateY(-1px); }
+        .no-errors { text-align: center; padding: 40px 20px; color: var(--muted); }
+        @media (max-width: 768px) { .grammar-main { grid-template-columns: 1fr; gap: 24px; } }
+    </style>
+</head>
+<body>
+    {% include 'header.html' %}
+    <div class="grammar-container">
+        <div class="tool-header">
+            <h1>Grammar & Spell Checker</h1>
+            <p>Check spelling and grammar errors with intelligent suggestions</p>
+        </div>
+        <div class="grammar-main">
+            <div class="grammar-input">
+                <h2 class="section-title"><i class='bx bx-edit'></i>Enter Text</h2>
+                <textarea id="text-input" class="text-input" placeholder="Type or paste your text here to check for spelling and grammar errors..."></textarea>
+                <button class="check-btn" id="check-btn"><i class='bx bx-search-alt'></i>Check Grammar</button>
+            </div>
+            <div class="results-panel">
+                <h2 class="section-title"><i class='bx bx-list-check'></i>Results</h2>
+                <div id="results">
+                    <div class="no-errors">
+                        <i class='bx bx-check-circle' style="font-size: 48px; color: var(--muted); margin-bottom: 16px; display: block;"></i>
+                        <p>Enter text to check for errors</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer class="modern-footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <h3>Toolflock</h3>
+                <p>Elegant digital tools crafted for modern productivity. Built with passion for developers, designers, and creators worldwide.</p>
+            </div>
+            <div class="footer-links">
+                <div class="footer-column">
+                    <h4>Tools</h4>
+                    <a href="/pdf">PDF Tools</a>
+                    <a href="/file-converter">File Converter</a>
+                    <a href="/shortener">URL Shortener</a>
+                    <a href="/qr">QR Generator</a>
+                </div>
+                <div class="footer-column">
+                    <h4>Company</h4>
+                    <a href="/about">About Us</a>
+                    <a href="/contact">Contact</a>
+                    <a href="/privacy">Privacy Policy</a>
+                    <a href="/terms">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2025 Toolflock by Erekan. Crafted with ❤️ for the global community.</p>
+            <div class="footer-tagline">
+                <span>✨ Where Elegance Meets Utility ✨</span>
+            </div>
+        </div>
+    </footer>
+    <script>
+        const textInput = document.getElementById('text-input');
+        const checkBtn = document.getElementById('check-btn');
+        const results = document.getElementById('results');
+        
+        checkBtn.addEventListener('click', async () => {
+            const text = textInput.value.trim();
+            if (!text) return;
+            
+            const originalText = checkBtn.innerHTML;
+            checkBtn.innerHTML = '<i class="bx bx-loader-alt bx-spin"></i> Checking...';
+            checkBtn.disabled = true;
+            
+            try {
+                const response = await fetch('/api/grammar', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text: text })
+                });
+                
+                const data = await response.json();
+                
+                if (data.errors && data.errors.length > 0) {
+                    results.innerHTML = data.errors.map(error => `
+                        <div class="error-item">
+                            <div class="error-word">❌ "${error.word}"</div>
+                            <div class="suggestions">
+                                ${error.suggestions.map(suggestion => `<span class="suggestion">${suggestion}</span>`).join('')}
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    results.innerHTML = `
+                        <div class="no-errors">
+                            <i class='bx bx-check-circle' style="font-size: 48px; color: var(--secondary); margin-bottom: 16px; display: block;"></i>
+                            <p style="color: var(--secondary); font-weight: 600;">No errors found! ✨</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                results.innerHTML = `
+                    <div class="no-errors">
+                        <i class='bx bx-error-circle' style="font-size: 48px; color: #dc2626; margin-bottom: 16px; display: block;"></i>
+                        <p style="color: #dc2626;">Error checking grammar. Please try again.</p>
+                    </div>
+                `;
+            } finally {
+                checkBtn.innerHTML = originalText;
+                checkBtn.disabled = false;
+            }
+        });
+        
+        // Auto-check with debounce
+        let timeout;
+        textInput.addEventListener('input', () => {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => {
+                if (textInput.value.trim()) {
+                    checkBtn.click();
+                }
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

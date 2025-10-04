@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Performance Optimizations -->
+    <link rel="dns-prefetch" href="//fonts.googleapis.com">
+    <link rel="dns-prefetch" href="//fonts.gstatic.com">
+    <link rel="dns-prefetch" href="//unpkg.com">
+    <meta name="theme-color" content="#3b82f6">
+    
+    <!-- Essential Meta Tags -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    
+    <!-- SEO Meta Tags -->
+    <title>Internet Speed Test - Check Download Upload Speed Online | Toolflock</title>
+    <meta name="description" content="Test your internet connection speed. Measure download speed, upload speed, and ping. Accurate broadband speed test.">
+    <meta name="keywords" content="speed test, internet speed test, broadband speed test, download speed, upload speed, connection test">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="Internet Speed Test - Check Download Upload Speed Online | Toolflock">
+    <meta property="og:description" content="Test your internet connection speed. Measure download speed, upload speed, and ping. Accurate broadband speed test.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://toolflock.com/speed_test">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://toolflock.com/speed_test">
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speed Test - Toolflock</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/styles.css">
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <style>
+        .speed-container { max-width: 800px; margin: 0 auto; padding: 40px 20px; }
+        .tool-header { text-align: center; margin-bottom: 50px; }
+        .tool-header h1 { margin: 0 0 16px 0; font-size: clamp(36px, 5vw, 48px); font-weight: 800; background: var(--accent-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; letter-spacing: -1px; }
+        .speed-card { background: var(--card); border: 1px solid var(--card-border); border-radius: 24px; padding: 40px; box-shadow: 0 8px 32px var(--shadow); transition: all 0.3s ease; text-align: center; }
+        .speed-card:hover { transform: translateY(-4px); box-shadow: 0 16px 48px var(--shadow-lg); }
+        .start-btn { background: var(--accent-gradient); color: white; border: none; border-radius: 20px; padding: 20px 40px; font-size: 18px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 16px; transition: all 0.3s ease; box-shadow: 0 8px 20px rgba(59, 130, 246, 0.25); margin-bottom: 40px; }
+        .start-btn:hover { transform: translateY(-3px); box-shadow: 0 12px 30px rgba(59, 130, 246, 0.35); }
+        .results-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 32px; }
+        .result-item { background: var(--bg-2); border: 1px solid var(--border); border-radius: 20px; padding: 24px; text-align: center; }
+        .result-value { font-size: 36px; font-weight: 800; background: var(--accent-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; margin-bottom: 8px; }
+        .result-label { font-size: 14px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+        .progress-bar { width: 100%; height: 8px; background: var(--bg-3); border-radius: 4px; overflow: hidden; margin: 20px 0; }
+        .progress-fill { height: 100%; background: var(--accent-gradient); width: 0%; transition: width 0.3s ease; }
+        @media (max-width: 768px) { .results-grid { grid-template-columns: 1fr; gap: 16px; } }
+    </style>
+</head>
+<body>
+    {% include 'header.html' %}
+    <div class="speed-container">
+        <div class="tool-header">
+            <h1>Internet Speed Test</h1>
+            <p>Test your internet connection speed with accurate measurements</p>
+        </div>
+        <div class="speed-card">
+            <button class="start-btn" id="start-btn">
+                <i class='bx bx-play-circle'></i>
+                Start Speed Test
+            </button>
+            <div id="progress-section" style="display: none;">
+                <p id="status-text" style="font-size: 18px; color: var(--text); margin-bottom: 16px;">Preparing test...</p>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+            </div>
+            <div id="results" style="display: none;">
+                <div class="results-grid">
+                    <div class="result-item">
+                        <div class="result-value" id="download-speed">—</div>
+                        <div class="result-label">Download Mbps</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-value" id="upload-speed">—</div>
+                        <div class="result-label">Upload Mbps</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-value" id="ping-speed">—</div>
+                        <div class="result-label">Ping Ms</div>
+                    </div>
+                </div>
+            </div>
+            <div id="error-message" style="background: linear-gradient(135deg, #fef2f2, #fee2e2); border: 2px solid #fca5a5; color: #dc2626; padding: 16px 20px; border-radius: 16px; margin-top: 20px; font-weight: 600; display: none; align-items: center; gap: 12px;">
+                <i class='bx bx-error-circle'></i>
+                <span>Speed test failed. Please try again.</span>
+            </div>
+        </div>
+    </div>
+    <footer class="modern-footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <h3>Toolflock</h3>
+                <p>Elegant digital tools crafted for modern productivity. Built with passion for developers, designers, and creators worldwide.</p>
+            </div>
+            <div class="footer-links">
+                <div class="footer-column">
+                    <h4>Tools</h4>
+                    <a href="/pdf">PDF Tools</a>
+                    <a href="/file-converter">File Converter</a>
+                    <a href="/shortener">URL Shortener</a>
+                    <a href="/qr">QR Generator</a>
+                </div>
+                <div class="footer-column">
+                    <h4>Company</h4>
+                    <a href="/about">About Us</a>
+                    <a href="/contact">Contact</a>
+                    <a href="/privacy">Privacy Policy</a>
+                    <a href="/terms">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2025 Toolflock by Erekan. Crafted with ❤️ for the global community.</p>
+            <div class="footer-tagline">
+                <span>✨ Where Elegance Meets Utility ✨</span>
+            </div>
+        </div>
+    </footer>
+    <script>
+        const startBtn = document.getElementById('start-btn');
+        const progressSection = document.getElementById('progress-section');
+        const progressFill = document.getElementById('progress-fill');
+        const statusText = document.getElementById('status-text');
+        const results = document.getElementById('results');
+        const downloadSpeed = document.getElementById('download-speed');
+        const uploadSpeed = document.getElementById('upload-speed');
+        const pingSpeed = document.getElementById('ping-speed');
+        const errorMessage = document.getElementById('error-message');
+        
+        startBtn.addEventListener('click', async () => {
+            startBtn.style.display = 'none';
+            progressSection.style.display = 'block';
+            results.style.display = 'none';
+            errorMessage.style.display = 'none';
+            
+            try {
+                // Simulate progress
+                let progress = 0;
+                const interval = setInterval(() => {
+                    progress += Math.random() * 20;
+                    if (progress > 90) progress = 90;
+                    progressFill.style.width = progress + '%';
+                }, 200);
+                
+                statusText.textContent = 'Testing connection speed...';
+                
+                const response = await fetch('/api/speedtest', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Speed test failed');
+                }
+                
+                const data = await response.json();
+                
+                clearInterval(interval);
+                progressFill.style.width = '100%';
+                
+                setTimeout(() => {
+                    downloadSpeed.textContent = data.downloadMbps;
+                    uploadSpeed.textContent = data.uploadMbps;
+                    pingSpeed.textContent = data.pingMs;
+                    
+                    progressSection.style.display = 'none';
+                    results.style.display = 'block';
+                    
+                    // Add reset button
+                    setTimeout(() => {
+                        const resetBtn = document.createElement('button');
+                        resetBtn.className = 'start-btn';
+                        resetBtn.innerHTML = '<i class="bx bx-refresh"></i>Test Again';
+                        resetBtn.style.marginTop = '24px';
+                        resetBtn.onclick = () => {
+                            resetBtn.remove();
+                            startBtn.style.display = 'inline-flex';
+                            results.style.display = 'none';
+                        };
+                        results.appendChild(resetBtn);
+                    }, 1000);
+                }, 500);
+                
+            } catch (error) {
+                clearInterval(interval);
+                progressSection.style.display = 'none';
+                errorMessage.style.display = 'flex';
+                startBtn.style.display = 'inline-flex';
+            }
+        });
+    </script>
+</body>
+</html>

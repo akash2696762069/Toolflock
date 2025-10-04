@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Performance Optimizations -->
+    <link rel="dns-prefetch" href="//fonts.googleapis.com">
+    <link rel="dns-prefetch" href="//fonts.gstatic.com">
+    <link rel="dns-prefetch" href="//unpkg.com">
+    <meta name="theme-color" content="#3b82f6">
+    
+    <!-- Essential Meta Tags -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    
+    <!-- SEO Meta Tags -->
+    <title>Screen Recorder - Record Screen Online | Browser Screen Capture | Toolflock</title>
+    <meta name="description" content="Record your screen directly in browser. Free online screen recorder with high quality video capture. No software installation required.">
+    <meta name="keywords" content="screen recorder, screen capture, record screen online, browser screen recorder, screen recording tool">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="Screen Recorder - Record Screen Online | Browser Screen Capture | Toolflock">
+    <meta property="og:description" content="Record your screen directly in browser. Free online screen recorder with high quality video capture. No software installation required.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://toolflock.com/screen_recorder">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://toolflock.com/screen_recorder">
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Screen Recorder - Toolflock</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/styles.css">
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <style>
+        .recorder-container { max-width: 900px; margin: 0 auto; padding: 40px 20px; }
+        .tool-header { text-align: center; margin-bottom: 50px; }
+        .tool-header h1 { margin: 0 0 16px 0; font-size: clamp(36px, 5vw, 48px); font-weight: 800; background: var(--accent-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; letter-spacing: -1px; }
+        .recorder-card { background: var(--card); border: 1px solid var(--card-border); border-radius: 24px; padding: 40px; box-shadow: 0 8px 32px var(--shadow); transition: all 0.3s ease; text-align: center; }
+        .recorder-card:hover { transform: translateY(-4px); box-shadow: 0 16px 48px var(--shadow-lg); }
+        .preview-area { background: var(--bg-2); border: 2px dashed var(--border); border-radius: 20px; padding: 40px; margin-bottom: 32px; min-height: 300px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .preview-video { max-width: 100%; border-radius: 16px; box-shadow: 0 8px 24px var(--shadow); display: none; }
+        .preview-placeholder { text-align: center; }
+        .preview-placeholder i { font-size: 64px; color: var(--muted); margin-bottom: 16px; display: block; }
+        .controls { display: flex; justify-content: center; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
+        .control-btn { background: var(--accent-gradient); color: white; border: none; border-radius: 16px; padding: 16px 24px; font-size: 16px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 12px; transition: all 0.3s ease; box-shadow: 0 8px 20px rgba(59, 130, 246, 0.25); }
+        .control-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(59, 130, 246, 0.35); }
+        .control-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+        .stop-btn { background: linear-gradient(135deg, #ef4444, #dc2626); }
+        .download-btn { background: linear-gradient(135deg, var(--secondary), var(--secondary-light)); }
+        .settings-section { background: var(--bg-2); border: 1px solid var(--border); border-radius: 20px; padding: 24px; margin-bottom: 24px; text-align: left; }
+        .settings-title { font-size: 18px; font-weight: 700; color: var(--text); margin: 0 0 16px 0; display: flex; align-items: center; gap: 12px; }
+        .settings-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+        .setting-item { display: flex; align-items: center; gap: 12px; }
+        .setting-item input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--accent); }
+        .setting-item label { font-size: 14px; color: var(--text); font-weight: 500; }
+        .status-message { padding: 16px 20px; border-radius: 16px; margin-top: 20px; font-weight: 600; display: none; align-items: center; gap: 12px; }
+        .status-message.recording { background: linear-gradient(135deg, #fef3c7, #fde68a); border: 2px solid #f59e0b; color: #92400e; display: flex; }
+        .status-message.error { background: linear-gradient(135deg, #fef2f2, #fee2e2); border: 2px solid #fca5a5; color: #dc2626; display: flex; }
+        @media (max-width: 768px) { .controls { flex-direction: column; align-items: center; } .control-btn { width: 100%; justify-content: center; } }
+    </style>
+</head>
+<body>
+    {% include 'header.html' %}
+    <div class="recorder-container">
+        <div class="tool-header">
+            <h1>Screen Recorder</h1>
+            <p>Record your screen and audio directly in your browser with instant download</p>
+        </div>
+        <div class="recorder-card">
+            <div class="settings-section">
+                <h3 class="settings-title"><i class='bx bx-cog'></i>Recording Settings</h3>
+                <div class="settings-grid">
+                    <div class="setting-item">
+                        <input type="checkbox" id="include-audio" checked>
+                        <label for="include-audio">Include System Audio</label>
+                    </div>
+                    <div class="setting-item">
+                        <input type="checkbox" id="include-mic">
+                        <label for="include-mic">Include Microphone</label>
+                    </div>
+                    <div class="setting-item">
+                        <input type="checkbox" id="record-cursor" checked>
+                        <label for="record-cursor">Show Cursor</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="preview-area" id="preview-area">
+                <div class="preview-placeholder" id="placeholder">
+                    <i class='bx bx-video'></i>
+                    <p style="color: var(--muted); margin: 0; font-size: 18px;">Click Start Recording to begin</p>
+                </div>
+                <video id="preview-video" class="preview-video" controls></video>
+            </div>
+            
+            <div class="controls">
+                <button class="control-btn" id="start-btn">
+                    <i class='bx bx-play-circle'></i>
+                    Start Recording
+                </button>
+                <button class="control-btn stop-btn" id="stop-btn" disabled>
+                    <i class='bx bx-stop-circle'></i>
+                    Stop Recording
+                </button>
+                <button class="control-btn download-btn" id="download-btn" disabled>
+                    <i class='bx bx-download'></i>
+                    Download Video
+                </button>
+            </div>
+            
+            <div class="status-message recording" id="recording-status">
+                <i class='bx bx-radio-circle-marked bx-flashing'></i>
+                <span>Recording in progress... Click Stop when finished</span>
+            </div>
+            
+            <div class="status-message error" id="error-message">
+                <i class='bx bx-error-circle'></i>
+                <span id="error-text">Recording failed. Please try again.</span>
+            </div>
+        </div>
+    </div>
+    <footer class="modern-footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <h3>Toolflock</h3>
+                <p>Elegant digital tools crafted for modern productivity. Built with passion for developers, designers, and creators worldwide.</p>
+            </div>
+            <div class="footer-links">
+                <div class="footer-column">
+                    <h4>Tools</h4>
+                    <a href="/pdf">PDF Tools</a>
+                    <a href="/file-converter">File Converter</a>
+                    <a href="/shortener">URL Shortener</a>
+                    <a href="/qr">QR Generator</a>
+                </div>
+                <div class="footer-column">
+                    <h4>Company</h4>
+                    <a href="/about">About Us</a>
+                    <a href="/contact">Contact</a>
+                    <a href="/privacy">Privacy Policy</a>
+                    <a href="/terms">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2025 Toolflock by Erekan. Crafted with ❤️ for the global community.</p>
+            <div class="footer-tagline">
+                <span>✨ Where Elegance Meets Utility ✨</span>
+            </div>
+        </div>
+    </footer>
+    <script>
+        let mediaRecorder;
+        let recordedChunks = [];
+        let stream;
+        
+        const startBtn = document.getElementById('start-btn');
+        const stopBtn = document.getElementById('stop-btn');
+        const downloadBtn = document.getElementById('download-btn');
+        const previewVideo = document.getElementById('preview-video');
+        const placeholder = document.getElementById('placeholder');
+        const recordingStatus = document.getElementById('recording-status');
+        const errorMessage = document.getElementById('error-message');
+        const errorText = document.getElementById('error-text');
+        
+        startBtn.addEventListener('click', startRecording);
+        stopBtn.addEventListener('click', stopRecording);
+        downloadBtn.addEventListener('click', downloadRecording);
+        
+        async function startRecording() {
+            try {
+                const includeAudio = document.getElementById('include-audio').checked;
+                const includeMic = document.getElementById('include-mic').checked;
+                
+                // Get screen capture
+                stream = await navigator.mediaDevices.getDisplayMedia({
+                    video: { mediaSource: 'screen' },
+                    audio: includeAudio
+                });
+                
+                // Add microphone if requested
+                if (includeMic) {
+                    const micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    const audioContext = new AudioContext();
+                    const dest = audioContext.createMediaStreamDestination();
+                    
+                    if (stream.getAudioTracks().length > 0) {
+                        audioContext.createMediaStreamSource(stream).connect(dest);
+                    }
+                    audioContext.createMediaStreamSource(micStream).connect(dest);
+                    
+                    // Replace audio track
+                    stream.removeTrack(stream.getAudioTracks()[0]);
+                    stream.addTrack(dest.stream.getAudioTracks()[0]);
+                }
+                
+                recordedChunks = [];
+                mediaRecorder = new MediaRecorder(stream, {
+                    mimeType: 'video/webm; codecs=vp9'
+                });
+                
+                mediaRecorder.ondataavailable = (event) => {
+                    if (event.data.size > 0) {
+                        recordedChunks.push(event.data);
+                    }
+                };
+                
+                mediaRecorder.onstop = () => {
+                    const blob = new Blob(recordedChunks, { type: 'video/webm' });
+                    const url = URL.createObjectURL(blob);
+                    previewVideo.src = url;
+                    previewVideo.style.display = 'block';
+                    placeholder.style.display = 'none';
+                    downloadBtn.disabled = false;
+                    recordingStatus.style.display = 'none';
+                };
+                
+                mediaRecorder.start();
+                
+                startBtn.disabled = true;
+                stopBtn.disabled = false;
+                recordingStatus.style.display = 'flex';
+                errorMessage.style.display = 'none';
+                
+                // Handle stream ending (user stops sharing)
+                stream.getVideoTracks()[0].onended = () => {
+                    stopRecording();
+                };
+                
+            } catch (error) {
+                console.error('Error starting recording:', error);
+                errorText.textContent = 'Could not start recording. Please ensure you grant screen sharing permission.';
+                errorMessage.style.display = 'flex';
+            }
+        }
+        
+        function stopRecording() {
+            if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+                mediaRecorder.stop();
+            }
+            
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+            }
+            
+            startBtn.disabled = false;
+            stopBtn.disabled = true;
+        }
+        
+        function downloadRecording() {
+            if (recordedChunks.length === 0) return;
+            
+            const blob = new Blob(recordedChunks, { type: 'video/webm' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `screen-recording-${new Date().toISOString().slice(0, 19).replace(/:/g, '-')}.webm`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+        
+        // Check browser support
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getDisplayMedia) {
+            errorText.textContent = 'Screen recording is not supported in this browser. Please use Chrome, Firefox, or Edge.';
+            errorMessage.style.display = 'flex';
+            startBtn.disabled = true;
+        }
+    </script>
+</body>
+</html>
